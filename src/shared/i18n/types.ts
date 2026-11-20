@@ -1,4 +1,5 @@
 import type { common } from './locales/en/common';
+import type { profile } from './locales/en/profile';
 import type { settings } from './locales/en/settings';
 import type { trips } from './locales/en/trips';
 
@@ -19,6 +20,7 @@ export type Translations<T> = {
 // English is the source of truth for the translation keys.
 export type Resources = {
   common: typeof common;
+  profile: typeof profile;
   settings: typeof settings;
   trips: typeof trips;
 };

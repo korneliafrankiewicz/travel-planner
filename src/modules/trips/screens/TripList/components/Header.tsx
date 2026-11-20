@@ -1,22 +1,30 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { Avatar } from '@/shared/ui/Avatar';
+import { useProfileStore } from '@/modules/profile/screens/Profile/store/profileStore';
+import { getInitials } from '@/modules/profile/screens/Profile/utils/getInitials';
 import { typography, useTheme } from '@/shared/theme';
-
-// TODO: replace with the initials of the signed-in user once accounts exist.
-const PLACEHOLDER_INITIALS = 'AB';
+import { Avatar } from '@/shared/ui/Avatar';
 
 export const Header = () => {
   const { t } = useTranslation('trips');
   const { colors } = useTheme();
+  const router = useRouter();
+  const displayName = useProfileStore((state) => state.displayName);
 
   return (
     <View style={styles.header}>
       <Text accessibilityRole="header" style={[styles.title, { color: colors.textPrimary }]}>
         {t('title')}
       </Text>
-      <Avatar initials={PLACEHOLDER_INITIALS} label={t('header.avatarLabel')} />
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t('header.avatarLabel')}
+        onPress={() => router.push('/profile')}
+        style={({ pressed }) => pressed && styles.pressed}>
+        <Avatar initials={getInitials(displayName)} label={t('header.avatarLabel')} />
+      </Pressable>
     </View>
   );
 };
@@ -30,5 +38,8 @@ const styles = StyleSheet.create({
   title: {
     flexShrink: 1,
     ...typography.screenTitle,
+  },
+  pressed: {
+    opacity: 0.8,
   },
 });
