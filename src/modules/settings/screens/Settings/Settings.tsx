@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text } from 'react-native';
+import { ScrollView, StyleSheet, Switch, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
@@ -7,6 +7,7 @@ import { maxContentWidth, spacing, useTheme, webTabBarInset, type ThemeScheme } 
 import type { SegmentedOption } from '@/shared/ui/SegmentedControl';
 
 import { SegmentedSetting } from './components/SegmentedSetting';
+import { SettingsRow } from './components/SettingsRow';
 import { SettingsSection } from './components/SettingsSection';
 import { useSettingsStore } from './store/settingsStore';
 
@@ -51,6 +52,37 @@ const Settings = () => {
             options={languageOptions}
             value={language}
             onChange={setLanguage}
+          />
+        </SettingsSection>
+
+        {/* Placeholders: these rows have no behavior until authentication exists. */}
+        <SettingsSection title={t('sections.security')}>
+          <SettingsRow
+            title={t('security.biometric.title')}
+            hint={t('comingSoon')}
+            accessibilityRole="switch"
+            checked={false}
+            disabled
+            trailing={
+              <Switch
+                disabled
+                value={false}
+                trackColor={{ false: colors.border, true: colors.accent }}
+                thumbColor={colors.surface}
+              />
+            }
+          />
+          <SettingsRow title={t('security.changePin.title')} hint={t('comingSoon')} disabled />
+          <SettingsRow title={t('security.lockAfter.title')} hint={t('comingSoon')} disabled />
+        </SettingsSection>
+
+        <SettingsSection title={t('sections.account')}>
+          <SettingsRow title={t('account.logOut.title')} hint={t('comingSoon')} disabled />
+          <SettingsRow
+            title={t('account.deleteAccount.title')}
+            hint={t('comingSoon')}
+            destructive
+            disabled
           />
         </SettingsSection>
       </ScrollView>

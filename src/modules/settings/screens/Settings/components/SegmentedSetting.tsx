@@ -10,7 +10,7 @@ type SegmentedSettingProps<T extends string> = {
   onChange: (value: T) => void;
 };
 
-// A setting row: a label with a segmented control below it.
+// A settings row: a label with a segmented control below it.
 export const SegmentedSetting = <T extends string>({
   label,
   options,
@@ -29,6 +29,7 @@ export const SegmentedSetting = <T extends string>({
 
 const styles = StyleSheet.create({
   setting: {
+    padding: spacing.lg,
     gap: spacing.md,
   },
   label: {

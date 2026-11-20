@@ -1,7 +1,10 @@
 export const settings = {
   screenTitle: 'Settings',
+  comingSoon: 'Coming soon',
   sections: {
     appearance: 'Appearance',
+    security: 'Security',
+    account: 'Account',
   },
   theme: {
     title: 'Theme',
@@ -16,6 +19,25 @@ export const settings = {
     options: {
       pl: 'Polski',
       en: 'English',
+    },
+  },
+  security: {
+    biometric: {
+      title: 'Biometric unlock',
+    },
+    changePin: {
+      title: 'Change PIN',
+    },
+    lockAfter: {
+      title: 'Lock after',
+    },
+  },
+  account: {
+    logOut: {
+      title: 'Log out',
+    },
+    deleteAccount: {
+      title: 'Delete account and data',
     },
   },
 } as const;
