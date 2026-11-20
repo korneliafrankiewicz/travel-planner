@@ -22,7 +22,6 @@ export const tripSchema = z
     notes: z.string(),
     startDate: isoDateSchema,
     endDate: isoDateSchema,
-    stopsCount: z.number().int().nonnegative(),
   })
   .refine((trip) => trip.endDate >= trip.startDate);
 

@@ -6,6 +6,7 @@ import {
   useSettingsHydrated,
   useSettingsStore,
 } from '@/modules/settings/screens/Settings/store/settingsStore';
+import { useStopsHydrated } from '@/modules/trips/screens/TripList/store/stopsStore';
 import { useTripsHydrated } from '@/modules/trips/screens/TripList/store/tripsStore';
 import '@/shared/i18n';
 import { navigationFonts, ThemeProvider, useTheme } from '@/shared/theme';
@@ -46,6 +47,8 @@ const NavigationShell = () => {
         <Stack.Screen name="new-trip" options={{ presentation: 'modal' }} />
         <Stack.Screen name="trip/[id]/index" />
         <Stack.Screen name="trip/[id]/edit" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="trip/[id]/stops/new" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="trip/[id]/stops/[stopId]" options={{ presentation: 'modal' }} />
       </Stack>
     </NavigationThemeProvider>
   );
@@ -55,9 +58,10 @@ const RootLayout = () => {
   // Wait for every persisted store, so no screen flashes default data before saved data loads.
   const settingsHydrated = useSettingsHydrated();
   const tripsHydrated = useTripsHydrated();
+  const stopsHydrated = useStopsHydrated();
   const theme = useSettingsStore((state) => state.theme);
 
-  if (!settingsHydrated || !tripsHydrated) {
+  if (!settingsHydrated || !tripsHydrated || !stopsHydrated) {
     return null;
   }
 

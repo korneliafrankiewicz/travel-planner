@@ -43,6 +43,69 @@ export const trips = {
     message: '"{{title}}" and all its details will be removed. This cannot be undone.',
     confirm: 'Delete',
   },
+  itinerary: {
+    title: 'Itinerary',
+    day: 'Day {{number}}',
+    outsideTrip: 'Outside the trip dates',
+    addStop: 'Add stop',
+    empty: 'No stops planned yet',
+    overlap: 'Overlaps with another stop',
+  },
+  stop: {
+    newTitle: 'New stop',
+    editTitle: 'Edit stop',
+    save: 'Save stop',
+    delete: 'Delete stop',
+    duration: {
+      minutes: '{{value}} min',
+      hours: '{{value}} h',
+      hoursMinutes: '{{hours}} h {{minutes}} min',
+    },
+    types: {
+      lodging: 'Lodging',
+      meal: 'Meal',
+      attraction: 'Attraction',
+      other: 'Other',
+    },
+    fields: {
+      type: {
+        label: 'Type',
+      },
+      title: {
+        label: 'Title',
+        placeholder: 'e.g. Dinner at Time Out Market',
+      },
+      day: {
+        label: 'Day',
+      },
+      startTime: {
+        label: 'Start time',
+        placeholder: '09:00',
+      },
+      duration: {
+        label: 'Duration (minutes)',
+        placeholder: '60',
+      },
+      url: {
+        label: 'Link',
+        placeholder: 'https://…',
+      },
+    },
+    deleteConfirm: {
+      title: 'Delete this stop?',
+      message: '"{{title}}" will be removed from the itinerary.',
+    },
+    errors: {
+      titleRequired: 'Enter a title',
+      dateInvalid: 'Choose a day',
+      dayOutOfRange: 'Choose a day of the trip',
+      pastDate: "Stops can't be planned for days in the past",
+      timeInvalid: 'Enter a time as HH:mm, e.g. 09:30',
+      durationInvalid: 'Enter the duration in minutes (0–1440)',
+      endsAfterMidnight: 'The stop must end by midnight',
+      urlInvalid: 'Enter a link starting with https://',
+    },
+  },
   form: {
     editTitle: 'Edit trip',
     saveChanges: 'Save changes',

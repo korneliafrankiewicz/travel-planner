@@ -13,6 +13,9 @@ type FormFieldProps = {
   optional?: boolean;
   multiline?: boolean;
   autoCapitalize?: TextInputProps['autoCapitalize'];
+  autoCorrect?: boolean;
+  keyboardType?: TextInputProps['keyboardType'];
+  maxLength?: number;
 };
 
 export const FormField = ({
@@ -24,6 +27,9 @@ export const FormField = ({
   optional = false,
   multiline = false,
   autoCapitalize = 'sentences',
+  autoCorrect,
+  keyboardType,
+  maxLength,
 }: FormFieldProps) => {
   const { t } = useTranslation('trips');
   const { colors } = useTheme();
@@ -50,6 +56,9 @@ export const FormField = ({
         selectionColor={colors.accent}
         multiline={multiline}
         autoCapitalize={autoCapitalize}
+        autoCorrect={autoCorrect}
+        keyboardType={keyboardType}
+        maxLength={maxLength}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         style={[

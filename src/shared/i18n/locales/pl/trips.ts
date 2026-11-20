@@ -51,6 +51,69 @@ export const trips: Translations<typeof en> = {
     message: '„{{title}}” i wszystkie jej dane zostaną usunięte. Tej operacji nie można cofnąć.',
     confirm: 'Usuń',
   },
+  itinerary: {
+    title: 'Plan podróży',
+    day: 'Dzień {{number}}',
+    outsideTrip: 'Poza datami podróży',
+    addStop: 'Dodaj punkt',
+    empty: 'Nie zaplanowano jeszcze żadnych punktów',
+    overlap: 'Nakłada się na inny punkt',
+  },
+  stop: {
+    newTitle: 'Nowy punkt',
+    editTitle: 'Edytuj punkt',
+    save: 'Zapisz punkt',
+    delete: 'Usuń punkt',
+    duration: {
+      minutes: '{{value}} min',
+      hours: '{{value}} godz.',
+      hoursMinutes: '{{hours}} godz. {{minutes}} min',
+    },
+    types: {
+      lodging: 'Nocleg',
+      meal: 'Posiłek',
+      attraction: 'Atrakcja',
+      other: 'Inne',
+    },
+    fields: {
+      type: {
+        label: 'Rodzaj',
+      },
+      title: {
+        label: 'Nazwa',
+        placeholder: 'np. Kolacja w Time Out Market',
+      },
+      day: {
+        label: 'Dzień',
+      },
+      startTime: {
+        label: 'Godzina rozpoczęcia',
+        placeholder: '09:00',
+      },
+      duration: {
+        label: 'Czas trwania (minuty)',
+        placeholder: '60',
+      },
+      url: {
+        label: 'Link',
+        placeholder: 'https://…',
+      },
+    },
+    deleteConfirm: {
+      title: 'Usunąć ten punkt?',
+      message: '„{{title}}” zostanie usunięty z planu.',
+    },
+    errors: {
+      titleRequired: 'Podaj nazwę',
+      dateInvalid: 'Wybierz dzień',
+      dayOutOfRange: 'Wybierz dzień podróży',
+      pastDate: 'Nie można planować punktów na dni z przeszłości',
+      timeInvalid: 'Podaj godzinę w formacie GG:MM, np. 09:30',
+      durationInvalid: 'Podaj czas trwania w minutach (0–1440)',
+      endsAfterMidnight: 'Punkt musi kończyć się do północy',
+      urlInvalid: 'Podaj link zaczynający się od https://',
+    },
+  },
   form: {
     editTitle: 'Edytuj podróż',
     saveChanges: 'Zapisz zmiany',

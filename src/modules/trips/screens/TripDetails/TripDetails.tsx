@@ -9,8 +9,10 @@ import { maxContentWidth, radius, spacing, typography, useTheme } from '@/shared
 import { ConfirmDialog } from '@/shared/ui/ConfirmDialog';
 import { IconButton } from '@/shared/ui/IconButton';
 
+import { useStopCount } from '../TripList/store/stopsStore';
 import { useTripsStore } from '../TripList/store/tripsStore';
 import { formatDateRange, getTripDayCount } from '../TripList/utils/tripDates';
+import { ItinerarySection } from './components/ItinerarySection';
 import { MapPlaceholder } from './components/MapPlaceholder';
 import { getGoogleMapsSearchUrl } from './utils/maps';
 
@@ -31,6 +33,7 @@ const TripDetails = () => {
     setLastTrip(trip);
   }
   const shownTrip = trip ?? lastTrip;
+  const stopCount = useStopCount(shownTrip?.id ?? '');
 
   // An unknown id (e.g. a stale link) has nothing to show, so go back to the list.
   if (shownTrip === undefined) {
@@ -106,7 +109,7 @@ const TripDetails = () => {
             </View>
           </View>
           <Text style={[styles.stops, { color: colors.textSecondary }]}>
-            {t('summary.stops', { count: shownTrip.stopsCount })}
+            {t('summary.stops', { count: stopCount })}
           </Text>
         </View>
 
@@ -126,6 +129,8 @@ const TripDetails = () => {
             </View>
           </View>
         )}
+
+        <ItinerarySection trip={shownTrip} />
 
         <MapPlaceholder destination={shownTrip.destination} onOpenMaps={handleOpenMaps} />
       </ScrollView>

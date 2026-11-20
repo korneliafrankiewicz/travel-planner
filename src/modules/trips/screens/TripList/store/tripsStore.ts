@@ -5,6 +5,7 @@ import { createSafeJsonStorage } from '@/shared/store/safeStorage';
 import { usePersistHydrated } from '@/shared/store/usePersistHydrated';
 
 import { parseStoredTrips, type Trip } from '../schema/tripSchema';
+import { useStopsStore } from './stopsStore';
 
 export type { Trip };
 
@@ -29,7 +30,6 @@ const sampleTrips: Trip[] = [
     notes: '',
     startDate: '2026-12-13',
     endDate: '2026-12-15',
-    stopsCount: 9,
   },
   {
     id: 'sample-tatra',
@@ -38,7 +38,6 @@ const sampleTrips: Trip[] = [
     notes: '',
     startDate: '2026-08-14',
     endDate: '2026-08-17',
-    stopsCount: 12,
   },
 ];
 
@@ -52,7 +51,7 @@ export const useTripsStore = create<TripsState>()(
         set((state) => ({
           trips: [
             ...state.trips,
-            { ...input, id: `trip-${Date.now().toString(36)}`, stopsCount: 0 },
+            { ...input, id: `trip-${Date.now().toString(36)}` },
           ],
         })),
       // TODO: persist the change through the backend as well.
@@ -61,8 +60,11 @@ export const useTripsStore = create<TripsState>()(
           trips: state.trips.map((trip) => (trip.id === id ? { ...trip, ...input } : trip)),
         })),
       // TODO: delete the trip on the backend as well.
-      deleteTrip: (id) =>
-        set((state) => ({ trips: state.trips.filter((trip) => trip.id !== id) })),
+      deleteTrip: (id) => {
+        set((state) => ({ trips: state.trips.filter((trip) => trip.id !== id) }));
+        // A trip's stops make no sense without the trip.
+        useStopsStore.getState().deleteTripStops(id);
+      },
     }),
     {
       name: 'trips',

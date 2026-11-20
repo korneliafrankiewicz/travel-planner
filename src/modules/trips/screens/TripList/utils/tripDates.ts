@@ -30,6 +30,17 @@ export const daysBetween = (from: Date, to: Date): number =>
 export const getTripDayCount = (trip: DateRange): number =>
   daysBetween(parseLocalDate(trip.startDate), parseLocalDate(trip.endDate)) + 1;
 
+export const addDays = (date: Date, days: number): Date =>
+  new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
+
+// Every calendar day of the trip as YYYY-MM-DD, from the first to the last day.
+export const getTripDays = (trip: DateRange): string[] => {
+  const start = parseLocalDate(trip.startDate);
+  return Array.from({ length: getTripDayCount(trip) }, (_, index) =>
+    toIsoDate(addDays(start, index)),
+  );
+};
+
 export const getDaysUntilStart = (trip: Trip, today: Date): number =>
   daysBetween(today, parseLocalDate(trip.startDate));
 

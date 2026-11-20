@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { radius, spacing, typography, useTheme } from '@/shared/theme';
 
+import { useStopCount } from '../store/stopsStore';
 import type { Trip } from '../store/tripsStore';
 import {
   formatDateRange,
@@ -21,6 +22,7 @@ export const TripCard = ({ trip, today, onPress }: TripCardProps) => {
   const { t, i18n } = useTranslation('trips');
   const { colors } = useTheme();
 
+  const stopCount = useStopCount(trip.id);
   const status = getTripStatus(trip, today);
   const daysUntilStart = getDaysUntilStart(trip, today);
 
@@ -34,7 +36,7 @@ export const TripCard = ({ trip, today, onPress }: TripCardProps) => {
 
   const summary = t('summary.joined', {
     days: t('summary.days', { count: getTripDayCount(trip) }),
-    stops: t('summary.stops', { count: trip.stopsCount }),
+    stops: t('summary.stops', { count: stopCount }),
   });
 
   return (
