@@ -1,7 +1,6 @@
 import { Stack, ThemeProvider as NavigationThemeProvider, type Theme } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import {
   useSettingsHydrated,
@@ -57,22 +56,12 @@ const NavigationShell = () => {
 };
 
 const RootLayout = () => {
-  const { i18n } = useTranslation();
   // Wait for every persisted store, so no screen flashes default data before saved data loads.
   const settingsHydrated = useSettingsHydrated();
   const tripsHydrated = useTripsHydrated();
-  const hydrated = settingsHydrated && tripsHydrated;
   const theme = useSettingsStore((state) => state.theme);
-  const language = useSettingsStore((state) => state.language);
 
-  // Keep i18next in sync with the persisted language once settings are loaded.
-  useEffect(() => {
-    if (hydrated && i18n.language !== language) {
-      void i18n.changeLanguage(language);
-    }
-  }, [hydrated, language, i18n]);
-
-  if (!hydrated || i18n.language !== language) {
+  if (!settingsHydrated || !tripsHydrated) {
     return null;
   }
 

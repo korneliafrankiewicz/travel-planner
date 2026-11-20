@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-import { detectDeviceLanguage, isAppLanguage, type AppLanguage } from '@/shared/i18n';
+import { detectDeviceLanguage, i18n, isAppLanguage, type AppLanguage } from '@/shared/i18n';
 import { createSafeJsonStorage } from '@/shared/store/safeStorage';
 import { usePersistHydrated } from '@/shared/store/usePersistHydrated';
 import type { ThemeScheme } from '@/shared/theme';
@@ -42,6 +42,15 @@ export const useSettingsStore = create<SettingsState>()(
     },
   ),
 );
+
+// Keeps i18next in sync with the language setting, including when it is loaded from storage.
+// With bundled translations the change is applied synchronously, so screens never render
+// with a stale language and switching language does not remount the app.
+useSettingsStore.subscribe((state, previousState) => {
+  if (state.language !== previousState.language) {
+    void i18n.changeLanguage(state.language);
+  }
+});
 
 // True once the persisted settings have been read from storage.
 export const useSettingsHydrated = (): boolean => usePersistHydrated(useSettingsStore.persist);

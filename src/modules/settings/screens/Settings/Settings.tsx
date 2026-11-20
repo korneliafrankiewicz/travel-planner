@@ -1,21 +1,59 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
-import { maxContentWidth, spacing, useTheme, webTabBarInset } from '@/shared/theme';
+import type { AppLanguage } from '@/shared/i18n';
+import { maxContentWidth, spacing, useTheme, webTabBarInset, type ThemeScheme } from '@/shared/theme';
+import type { SegmentedOption } from '@/shared/ui/SegmentedControl';
 
-// Placeholder screen: only the title for now.
+import { SegmentedSetting } from './components/SegmentedSetting';
+import { SettingsSection } from './components/SettingsSection';
+import { useSettingsStore } from './store/settingsStore';
+
 const Settings = () => {
   const { t } = useTranslation('settings');
   const { colors } = useTheme();
+  const theme = useSettingsStore((state) => state.theme);
+  const language = useSettingsStore((state) => state.language);
+  const setTheme = useSettingsStore((state) => state.setTheme);
+  const setLanguage = useSettingsStore((state) => state.setLanguage);
+
+  const themeOptions: SegmentedOption<ThemeScheme>[] = [
+    { value: 'light', label: t('theme.options.light') },
+    { value: 'dark', label: t('theme.options.dark') },
+  ];
+
+  const languageOptions: SegmentedOption<AppLanguage>[] = [
+    { value: 'pl', label: t('language.options.pl') },
+    { value: 'en', label: t('language.options.en') },
+  ];
 
   return (
-    <SafeAreaView edges={['top', 'bottom']} style={[styles.screen, { backgroundColor: colors.background }]}>
-      <View style={[styles.content, { paddingTop: spacing.lg + webTabBarInset }]}>
+    <SafeAreaView
+      edges={['top', 'bottom']}
+      style={[styles.screen, { backgroundColor: colors.background }]}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={[styles.content, { paddingTop: spacing.lg + webTabBarInset }]}>
         <Text accessibilityRole="header" style={[styles.title, { color: colors.textPrimary }]}>
           {t('screenTitle')}
         </Text>
-      </View>
+
+        <SettingsSection title={t('sections.appearance')}>
+          <SegmentedSetting
+            label={t('theme.title')}
+            options={themeOptions}
+            value={theme}
+            onChange={setTheme}
+          />
+          <SegmentedSetting
+            label={t('language.title')}
+            options={languageOptions}
+            value={language}
+            onChange={setLanguage}
+          />
+        </SettingsSection>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -31,6 +69,8 @@ const styles = StyleSheet.create({
     maxWidth: maxContentWidth,
     alignSelf: 'center',
     paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.xl,
+    gap: spacing.xl,
   },
   title: {
     fontSize: 32,
