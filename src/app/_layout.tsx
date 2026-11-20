@@ -48,6 +48,8 @@ const NavigationShell = () => {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="new-trip" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="trip/[id]/index" />
+        <Stack.Screen name="trip/[id]/edit" options={{ presentation: 'modal' }} />
       </Stack>
     </NavigationThemeProvider>
   );

@@ -35,7 +35,25 @@ export const trips: Translations<typeof en> = {
     upcoming: 'Nie masz jeszcze żadnych podróży',
     past: 'Nie masz minionych podróży',
   },
+  details: {
+    back: 'Wstecz',
+    edit: 'Edytuj podróż',
+    delete: 'Usuń podróż',
+    noDestination: 'Nie ustawiono celu podróży',
+    map: {
+      title: 'Mapa',
+      placeholder: 'Podgląd mapy wkrótce',
+      open: 'Otwórz w Mapach Google',
+    },
+  },
+  delete: {
+    title: 'Usunąć tę podróż?',
+    message: '„{{title}}” i wszystkie jej dane zostaną usunięte. Tej operacji nie można cofnąć.',
+    confirm: 'Usuń',
+  },
   form: {
+    editTitle: 'Edytuj podróż',
+    saveChanges: 'Zapisz zmiany',
     cancel: 'Anuluj',
     save: 'Zapisz podróż',
     optional: 'Opcjonalne',

@@ -5,24 +5,23 @@ import { radius, spacing, useTheme } from '@/shared/theme';
 type PillButtonProps = {
   label: string;
   onPress: () => void;
+  // `primary` uses the main accent, `secondary` uses the secondary accent.
+  variant?: 'primary' | 'secondary';
   style?: StyleProp<ViewStyle>;
 };
 
-export const PillButton = ({ label, onPress, style }: PillButtonProps) => {
+export const PillButton = ({ label, onPress, variant = 'primary', style }: PillButtonProps) => {
   const { colors } = useTheme();
+  const backgroundColor = variant === 'primary' ? colors.accent : colors.accentSecondary;
+  const textColor = variant === 'primary' ? colors.onAccent : colors.onAccentSecondary;
 
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={label}
       onPress={onPress}
-      style={({ pressed }) => [
-        styles.button,
-        { backgroundColor: colors.accent },
-        pressed && styles.pressed,
-        style,
-      ]}>
-      <Text style={[styles.label, { color: colors.onAccent }]}>{label}</Text>
+      style={({ pressed }) => [styles.button, { backgroundColor }, pressed && styles.pressed, style]}>
+      <Text style={[styles.label, { color: textColor }]}>{label}</Text>
     </Pressable>
   );
 };

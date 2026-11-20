@@ -46,7 +46,13 @@ const TripList = () => {
           <FlatList
             data={visibleTrips}
             keyExtractor={(trip) => trip.id}
-            renderItem={({ item }) => <TripCard trip={item} today={today} />}
+            renderItem={({ item }) => (
+              <TripCard
+                trip={item}
+                today={today}
+                onPress={() => router.push({ pathname: '/trip/[id]', params: { id: item.id } })}
+              />
+            )}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
             contentContainerStyle={styles.list}
             showsVerticalScrollIndicator={false}

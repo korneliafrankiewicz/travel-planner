@@ -27,7 +27,25 @@ export const trips = {
     upcoming: 'You have no trips yet',
     past: 'You have no past trips',
   },
+  details: {
+    back: 'Back',
+    edit: 'Edit trip',
+    delete: 'Delete trip',
+    noDestination: 'No destination set',
+    map: {
+      title: 'Map',
+      placeholder: 'Map preview coming soon',
+      open: 'Open in Google Maps',
+    },
+  },
+  delete: {
+    title: 'Delete this trip?',
+    message: '"{{title}}" and all its details will be removed. This cannot be undone.',
+    confirm: 'Delete',
+  },
   form: {
+    editTitle: 'Edit trip',
+    saveChanges: 'Save changes',
     cancel: 'Cancel',
     save: 'Save trip',
     optional: 'Optional',

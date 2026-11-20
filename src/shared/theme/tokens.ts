@@ -12,6 +12,7 @@ export const lightColors: ThemeColors = {
   onAccentSecondary: '#16152A',
   border: '#DAD8EC',
   danger: '#D1324A',
+  scrim: '#16152A',
 };
 
 export const darkColors: ThemeColors = {
@@ -26,6 +27,7 @@ export const darkColors: ThemeColors = {
   onAccentSecondary: '#16152A',
   border: '#2C2B3F',
   danger: '#FF6B7F',
+  scrim: '#000000',
 };
 
 export const themeColors: Record<ThemeScheme, ThemeColors> = {

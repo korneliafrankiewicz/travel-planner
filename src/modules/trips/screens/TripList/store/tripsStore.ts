@@ -19,6 +19,8 @@ export type NewTripInput = Pick<
 type TripsState = {
   trips: Trip[];
   addTrip: (input: NewTripInput) => void;
+  updateTrip: (id: string, input: NewTripInput) => void;
+  deleteTrip: (id: string) => void;
 };
 
 // TODO: replace the hard-coded sample trips with real data once the backend exists.
@@ -53,4 +55,12 @@ export const useTripsStore = create<TripsState>()((set) => ({
         { ...input, id: `trip-${Date.now().toString(36)}`, stopsCount: 0 },
       ],
     })),
+  // TODO: persist the change through the backend as well.
+  updateTrip: (id, input) =>
+    set((state) => ({
+      trips: state.trips.map((trip) => (trip.id === id ? { ...trip, ...input } : trip)),
+    })),
+  // TODO: delete the trip on the backend as well.
+  deleteTrip: (id) =>
+    set((state) => ({ trips: state.trips.filter((trip) => trip.id !== id) })),
 }));

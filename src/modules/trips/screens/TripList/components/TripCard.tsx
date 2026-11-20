@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { radius, spacing, useTheme } from '@/shared/theme';
@@ -14,9 +14,10 @@ import {
 type TripCardProps = {
   trip: Trip;
   today: Date;
+  onPress: () => void;
 };
 
-export const TripCard = ({ trip, today }: TripCardProps) => {
+export const TripCard = ({ trip, today, onPress }: TripCardProps) => {
   const { t, i18n } = useTranslation('trips');
   const { colors } = useTheme();
 
@@ -37,7 +38,15 @@ export const TripCard = ({ trip, today }: TripCardProps) => {
   });
 
   return (
-    <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={trip.title}
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.card,
+        { backgroundColor: colors.surface, borderColor: colors.border },
+        pressed && styles.pressed,
+      ]}>
       <View style={styles.titleRow}>
         <Text numberOfLines={2} style={[styles.title, { color: colors.textPrimary }]}>
           {trip.title}
@@ -52,7 +61,7 @@ export const TripCard = ({ trip, today }: TripCardProps) => {
         {formatDateRange(trip, i18n.language)}
       </Text>
       <Text style={[styles.detail, { color: colors.textSecondary }]}>{summary}</Text>
-    </View>
+    </Pressable>
   );
 };
 
@@ -62,6 +71,9 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     padding: spacing.lg,
     gap: spacing.xs,
+  },
+  pressed: {
+    opacity: 0.8,
   },
   titleRow: {
     flexDirection: 'row',

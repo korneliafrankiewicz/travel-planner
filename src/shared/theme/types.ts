@@ -14,4 +14,6 @@ export type ThemeColors = {
   onAccentSecondary: string;
   border: string;
   danger: string;
+  // Backdrop color behind dialogs, used with partial opacity.
+  scrim: string;
 };

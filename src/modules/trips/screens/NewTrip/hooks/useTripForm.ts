@@ -1,9 +1,8 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 
-import { useTripsStore } from '../../TripList/store/tripsStore';
+import type { NewTripInput } from '../../TripList/store/tripsStore';
 import {
-  emptyNewTripValues,
   hasErrors,
   validateNewTrip,
   type NewTripErrors,
@@ -11,11 +10,14 @@ import {
 } from '../schema/newTripSchema';
 import { selectDateInRange } from '../utils/calendar';
 
-export const useNewTripForm = () => {
+// Shared by the "new trip" and "edit trip" screens.
+export const useTripForm = (
+  initialValues: NewTripValues,
+  onSave: (input: NewTripInput) => void,
+) => {
   const router = useRouter();
-  const addTrip = useTripsStore((state) => state.addTrip);
 
-  const [values, setValues] = useState<NewTripValues>(emptyNewTripValues);
+  const [values, setValues] = useState<NewTripValues>(initialValues);
   // Errors only show after the first save attempt, so the form does not start out red.
   const [submitted, setSubmitted] = useState(false);
 
@@ -42,7 +44,7 @@ export const useNewTripForm = () => {
       return;
     }
 
-    addTrip({
+    onSave({
       title: values.title.trim(),
       destination: values.destination.trim(),
       notes: values.notes.trim(),
@@ -54,3 +56,5 @@ export const useNewTripForm = () => {
 
   return { values, errors, setField, selectDate, submit, close };
 };
+
+export type TripFormState = ReturnType<typeof useTripForm>;
