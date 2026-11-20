@@ -47,5 +47,11 @@ example
 .env.*
 !.env.example
 
+# test coverage and other generated reports (never committed)
+coverage/
+.nyc_output/
+report/
+reports/
+
 # Claude Code local settings
 .claude/settings.local.json
