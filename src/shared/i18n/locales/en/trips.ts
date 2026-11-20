@@ -27,4 +27,35 @@ export const trips = {
     upcoming: 'You have no trips yet',
     past: 'You have no past trips',
   },
+  form: {
+    cancel: 'Cancel',
+    save: 'Save trip',
+    optional: 'Optional',
+    fields: {
+      title: {
+        label: 'Trip title',
+        placeholder: 'e.g. Weekend in Lisbon',
+      },
+      destination: {
+        label: 'Destination',
+        placeholder: 'City or country',
+      },
+      dates: {
+        label: 'Dates',
+        hint: 'Tap a start date, then an end date',
+      },
+      notes: {
+        label: 'Notes',
+        placeholder: 'Anything worth remembering',
+      },
+    },
+    errors: {
+      titleRequired: 'Enter a trip title',
+      datesRequired: 'Select a start and an end date',
+    },
+    calendar: {
+      previousMonth: 'Previous month',
+      nextMonth: 'Next month',
+    },
+  },
 } as const;

@@ -9,7 +9,9 @@ export type ThemeColors = {
   accent: string;
   // Text and icons drawn on top of `accent`.
   onAccent: string;
+  // Light in both themes, so it is used as a fill with `onAccentSecondary` text on top.
   accentSecondary: string;
+  onAccentSecondary: string;
   border: string;
   danger: string;
 };

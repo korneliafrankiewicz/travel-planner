@@ -1,9 +1,8 @@
-import { ThemeProvider as NavigationThemeProvider, type Theme } from 'expo-router';
+import { Stack, ThemeProvider as NavigationThemeProvider, type Theme } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import AppTabs from '@/components/app-tabs';
 import {
   useSettingsHydrated,
   useSettingsStore,
@@ -46,7 +45,10 @@ const NavigationShell = () => {
 
   return (
     <NavigationThemeProvider value={navigationTheme}>
-      <AppTabs />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="new-trip" options={{ presentation: 'modal' }} />
+      </Stack>
     </NavigationThemeProvider>
   );
 };

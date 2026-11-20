@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useRouter } from 'expo-router';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -25,8 +26,8 @@ const TripList = () => {
     [t],
   );
 
-  // TODO: open the "create trip" flow once it exists.
-  const handleNewTrip = () => {};
+  const router = useRouter();
+  const handleNewTrip = () => router.push('/new-trip');
 
   const hasTrips = visibleTrips.length > 0;
 

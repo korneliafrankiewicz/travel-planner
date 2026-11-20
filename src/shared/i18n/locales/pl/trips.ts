@@ -35,4 +35,35 @@ export const trips: Translations<typeof en> = {
     upcoming: 'Nie masz jeszcze żadnych podróży',
     past: 'Nie masz minionych podróży',
   },
+  form: {
+    cancel: 'Anuluj',
+    save: 'Zapisz podróż',
+    optional: 'Opcjonalne',
+    fields: {
+      title: {
+        label: 'Nazwa podróży',
+        placeholder: 'np. Weekend w Lizbonie',
+      },
+      destination: {
+        label: 'Cel podróży',
+        placeholder: 'Miasto lub kraj',
+      },
+      dates: {
+        label: 'Daty',
+        hint: 'Wybierz datę początku, a potem datę końca',
+      },
+      notes: {
+        label: 'Notatki',
+        placeholder: 'Wszystko, co warto zapamiętać',
+      },
+    },
+    errors: {
+      titleRequired: 'Podaj nazwę podróży',
+      datesRequired: 'Wybierz datę początku i końca',
+    },
+    calendar: {
+      previousMonth: 'Poprzedni miesiąc',
+      nextMonth: 'Następny miesiąc',
+    },
+  },
 };

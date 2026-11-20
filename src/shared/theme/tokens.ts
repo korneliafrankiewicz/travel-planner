@@ -9,6 +9,7 @@ export const lightColors: ThemeColors = {
   accent: '#5A4FCF',
   onAccent: '#FFFFFF',
   accentSecondary: '#C4CF4F',
+  onAccentSecondary: '#16152A',
   border: '#DAD8EC',
   danger: '#D1324A',
 };
@@ -22,6 +23,7 @@ export const darkColors: ThemeColors = {
   accent: '#9C94F2',
   onAccent: '#0F0C2B',
   accentSecondary: '#C4CF4F',
+  onAccentSecondary: '#16152A',
   border: '#2C2B3F',
   danger: '#FF6B7F',
 };
