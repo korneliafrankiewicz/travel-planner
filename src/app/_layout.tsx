@@ -7,11 +7,12 @@ import {
   useSettingsHydrated,
   useSettingsStore,
 } from '@/modules/settings/screens/Settings/store/settingsStore';
+import { useTripsHydrated } from '@/modules/trips/screens/TripList/store/tripsStore';
 import '@/shared/i18n';
 import { ThemeProvider, useTheme } from '@/shared/theme';
 
-// Keep the native splash screen visible until the persisted settings (theme, language)
-// are loaded and applied, so the app never flashes the wrong theme or language.
+// Keep the native splash screen visible until the persisted settings (theme, language) and
+// trips are loaded and applied, so the app never flashes the wrong theme, language or data.
 SplashScreen.preventAutoHideAsync();
 
 const NavigationShell = () => {
@@ -57,7 +58,10 @@ const NavigationShell = () => {
 
 const RootLayout = () => {
   const { i18n } = useTranslation();
-  const hydrated = useSettingsHydrated();
+  // Wait for every persisted store, so no screen flashes default data before saved data loads.
+  const settingsHydrated = useSettingsHydrated();
+  const tripsHydrated = useTripsHydrated();
+  const hydrated = settingsHydrated && tripsHydrated;
   const theme = useSettingsStore((state) => state.theme);
   const language = useSettingsStore((state) => state.language);
 

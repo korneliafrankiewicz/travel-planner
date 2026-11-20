@@ -70,6 +70,8 @@ export const trips = {
     errors: {
       titleRequired: 'Enter a trip title',
       datesRequired: 'Select a start and an end date',
+      pastDate: "Dates can't be in the past",
+      endBeforeStart: 'The end date must not be before the start date',
     },
     calendar: {
       previousMonth: 'Previous month',

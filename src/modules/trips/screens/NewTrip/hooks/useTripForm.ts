@@ -2,12 +2,8 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 
 import type { NewTripInput } from '../../TripList/store/tripsStore';
-import {
-  hasErrors,
-  validateNewTrip,
-  type NewTripErrors,
-  type NewTripValues,
-} from '../schema/newTripSchema';
+import { toIsoDate } from '../../TripList/utils/tripDates';
+import { validateNewTrip, type NewTripValues } from '../schema/newTripSchema';
 import { selectDateInRange } from '../utils/calendar';
 
 // Shared by the "new trip" and "edit trip" screens.
@@ -20,14 +16,25 @@ export const useTripForm = (
   const [values, setValues] = useState<NewTripValues>(initialValues);
   // Errors only show after the first save attempt, so the form does not start out red.
   const [submitted, setSubmitted] = useState(false);
+  // Trips can only be planned in advance: no date before today can be chosen.
+  const [today] = useState(() => toIsoDate(new Date()));
 
-  const errors: NewTripErrors = submitted ? validateNewTrip(values) : {};
+  const validation = validateNewTrip(values, {
+    today,
+    // Editing a trip that already started keeps its original start date valid until changed.
+    keepStartDate: initialValues.startDate,
+  });
+  const errors = submitted && !validation.success ? validation.errors : {};
 
   const setField = (field: 'title' | 'destination' | 'notes', value: string) =>
     setValues((current) => ({ ...current, [field]: value }));
 
-  const selectDate = (date: string) =>
+  const selectDate = (date: string) => {
+    if (date < today) {
+      return;
+    }
     setValues((current) => ({ ...current, ...selectDateInRange(current, date) }));
+  };
 
   const close = () => {
     if (router.canGoBack()) {
@@ -39,22 +46,14 @@ export const useTripForm = (
 
   const submit = () => {
     setSubmitted(true);
-    const { startDate, endDate } = values;
-    if (hasErrors(validateNewTrip(values)) || startDate === null || endDate === null) {
+    if (!validation.success) {
       return;
     }
-
-    onSave({
-      title: values.title.trim(),
-      destination: values.destination.trim(),
-      notes: values.notes.trim(),
-      startDate,
-      endDate,
-    });
+    onSave(validation.data);
     close();
   };
 
-  return { values, errors, setField, selectDate, submit, close };
+  return { values, errors, today, setField, selectDate, submit, close };
 };
 
 export type TripFormState = ReturnType<typeof useTripForm>;

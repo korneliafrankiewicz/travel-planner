@@ -78,6 +78,8 @@ export const trips: Translations<typeof en> = {
     errors: {
       titleRequired: 'Podaj nazwę podróży',
       datesRequired: 'Wybierz datę początku i końca',
+      pastDate: 'Daty nie mogą być z przeszłości',
+      endBeforeStart: 'Data końca nie może być wcześniejsza niż data początku',
     },
     calendar: {
       previousMonth: 'Poprzedni miesiąc',

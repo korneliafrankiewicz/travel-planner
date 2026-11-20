@@ -16,15 +16,29 @@ const MONDAY_REFERENCE = new Date(2024, 0, 1);
 type DateRangeCalendarProps = {
   startDate: string | null;
   endDate: string | null;
+  // First day that can be selected (YYYY-MM-DD). Earlier days are disabled.
+  minDate: string;
   onSelect: (date: string) => void;
 };
 
-export const DateRangeCalendar = ({ startDate, endDate, onSelect }: DateRangeCalendarProps) => {
+export const DateRangeCalendar = ({
+  startDate,
+  endDate,
+  minDate,
+  onSelect,
+}: DateRangeCalendarProps) => {
   const { t, i18n } = useTranslation('trips');
   const { colors } = useTheme();
   const [visibleMonth, setVisibleMonth] = useState(() =>
     startOfMonth(startDate !== null ? parseLocalDate(startDate) : new Date()),
   );
+
+  // Going back stops at the month of `minDate`, or at an already selected earlier start date
+  // (a trip that has already started can still be shown in full when editing it).
+  const earliestMonth = startOfMonth(
+    parseLocalDate(startDate !== null && startDate < minDate ? startDate : minDate),
+  );
+  const canGoToPreviousMonth = visibleMonth.getTime() > earliestMonth.getTime();
 
   const monthLabel = new Intl.DateTimeFormat(i18n.language, {
     month: 'long',
@@ -50,8 +64,11 @@ export const DateRangeCalendar = ({ startDate, endDate, onSelect }: DateRangeCal
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t('form.calendar.previousMonth')}
+          accessibilityState={{ disabled: !canGoToPreviousMonth }}
+          disabled={!canGoToPreviousMonth}
           hitSlop={spacing.md}
-          onPress={() => setVisibleMonth(addMonths(visibleMonth, -1))}>
+          onPress={() => setVisibleMonth(addMonths(visibleMonth, -1))}
+          style={!canGoToPreviousMonth && styles.disabledControl}>
           <SymbolView
             tintColor={colors.textPrimary}
             name={{ ios: 'chevron.left', android: 'chevron_left', web: 'chevron_left' }}
@@ -100,13 +117,15 @@ export const DateRangeCalendar = ({ startDate, endDate, onSelect }: DateRangeCal
             const isBetween =
               startDate !== null && endDate !== null && iso > startDate && iso < endDate;
             const isToday = iso === todayIso;
+            const isDisabled = iso < minDate;
 
             return (
               <Pressable
                 key={dayIndex}
                 accessibilityRole="button"
                 accessibilityLabel={fullDateFormat.format(date)}
-                accessibilityState={{ selected: isEdge || isBetween }}
+                accessibilityState={{ selected: isEdge || isBetween, disabled: isDisabled }}
+                disabled={isDisabled}
                 onPress={() => onSelect(iso)}
                 style={[
                   styles.dayCell,
@@ -117,6 +136,7 @@ export const DateRangeCalendar = ({ startDate, endDate, onSelect }: DateRangeCal
                     style={[
                       styles.dayLabel,
                       isToday && styles.todayLabel,
+                      isDisabled && !isEdge && !isBetween && styles.disabledLabel,
                       {
                         color: isEdge
                           ? colors.onAccent
@@ -181,6 +201,12 @@ const styles = StyleSheet.create({
   dayLabel: {
     fontSize: 15,
     fontWeight: '500',
+  },
+  disabledLabel: {
+    opacity: 0.35,
+  },
+  disabledControl: {
+    opacity: 0.35,
   },
   todayLabel: {
     fontWeight: '800',

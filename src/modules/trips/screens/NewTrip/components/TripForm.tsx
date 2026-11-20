@@ -27,7 +27,7 @@ type TripFormProps = {
 export const TripForm = ({ title, submitLabel, form }: TripFormProps) => {
   const { t } = useTranslation('trips');
   const { colors } = useTheme();
-  const { values, errors, setField, selectDate, submit, close } = form;
+  const { values, errors, today, setField, selectDate, submit, close } = form;
 
   return (
     <SafeAreaView
@@ -70,6 +70,7 @@ export const TripForm = ({ title, submitLabel, form }: TripFormProps) => {
           <DateRangeField
             startDate={values.startDate}
             endDate={values.endDate}
+            minDate={today}
             onSelect={selectDate}
             error={errors.dates !== undefined ? t(errors.dates) : undefined}
           />

@@ -9,11 +9,18 @@ import { DateRangeCalendar } from './DateRangeCalendar';
 type DateRangeFieldProps = {
   startDate: string | null;
   endDate: string | null;
+  minDate: string;
   onSelect: (date: string) => void;
   error?: string;
 };
 
-export const DateRangeField = ({ startDate, endDate, onSelect, error }: DateRangeFieldProps) => {
+export const DateRangeField = ({
+  startDate,
+  endDate,
+  minDate,
+  onSelect,
+  error,
+}: DateRangeFieldProps) => {
   const { t, i18n } = useTranslation('trips');
   const { colors } = useTheme();
 
@@ -37,7 +44,12 @@ export const DateRangeField = ({ startDate, endDate, onSelect, error }: DateRang
         )}
       </View>
       <Text style={[styles.summary, { color: colors.textSecondary }]}>{summary}</Text>
-      <DateRangeCalendar startDate={startDate} endDate={endDate} onSelect={onSelect} />
+      <DateRangeCalendar
+        startDate={startDate}
+        endDate={endDate}
+        minDate={minDate}
+        onSelect={onSelect}
+      />
       {error !== undefined && <Text style={[styles.error, { color: colors.danger }]}>{error}</Text>}
     </View>
   );

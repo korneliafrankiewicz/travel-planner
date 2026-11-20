@@ -1,9 +1,9 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useSyncExternalStore } from 'react';
 import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
 
 import { detectDeviceLanguage, isAppLanguage, type AppLanguage } from '@/shared/i18n';
+import { createSafeJsonStorage } from '@/shared/store/safeStorage';
+import { usePersistHydrated } from '@/shared/store/usePersistHydrated';
 import type { ThemeScheme } from '@/shared/theme';
 
 export type SettingsState = {
@@ -27,7 +27,7 @@ export const useSettingsStore = create<SettingsState>()(
     {
       name: 'settings',
       version: 1,
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createSafeJsonStorage<Pick<SettingsState, 'theme' | 'language'>>(),
       partialize: ({ theme, language }) => ({ theme, language }),
       // Ignore stored values that are no longer valid (e.g. the removed "system" theme)
       // instead of crashing on them.
@@ -43,10 +43,5 @@ export const useSettingsStore = create<SettingsState>()(
   ),
 );
 
-// True once the persisted settings have been read from AsyncStorage.
-export const useSettingsHydrated = (): boolean =>
-  useSyncExternalStore(
-    (onChange) => useSettingsStore.persist.onFinishHydration(onChange),
-    () => useSettingsStore.persist.hasHydrated(),
-    () => false,
-  );
+// True once the persisted settings have been read from storage.
+export const useSettingsHydrated = (): boolean => usePersistHydrated(useSettingsStore.persist);
