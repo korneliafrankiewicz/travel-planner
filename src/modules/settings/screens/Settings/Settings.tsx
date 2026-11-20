@@ -6,6 +6,7 @@ import type { AppLanguage } from '@/shared/i18n';
 import { maxContentWidth, spacing, typography, useTheme, webTabBarInset, type ThemeScheme } from '@/shared/theme';
 import type { SegmentedOption } from '@/shared/ui/SegmentedControl';
 
+import { ProfileCard } from './components/ProfileCard';
 import { SegmentedSetting } from './components/SegmentedSetting';
 import { SettingsRow } from './components/SettingsRow';
 import { SettingsSection } from './components/SettingsSection';
@@ -39,6 +40,8 @@ const Settings = () => {
         <Text accessibilityRole="header" style={[styles.title, { color: colors.textPrimary }]}>
           {t('screenTitle')}
         </Text>
+
+        <ProfileCard />
 
         <SettingsSection title={t('sections.appearance')}>
           <SegmentedSetting
