@@ -8,6 +8,7 @@ Expo / React Native app. See `AGENTS.md` for Expo-specific instructions. Full do
 - User-facing text only via i18n files (`en`, `pl`) using English translation keys. No hard-coded strings or colors in components.
 - Arrow functions for components, hooks and helpers.
 - Structure: `src/modules/<module>/screens/<Screen>/` with `components`, `hooks`, `schema`, `store`, `utils` created only when needed. Files in `src/app/` are thin re-exports.
+- Font sizes and weights only via `typography` in `src/shared/theme/typography.ts` (spread a text style, add only the color). No inline `fontSize` or `fontWeight` in components.
 - Light and dark themes, `en` and `pl` languages from the start.
 - Secure storage holds tokens only, never passwords.
 - Install packages with `npx expo install`.

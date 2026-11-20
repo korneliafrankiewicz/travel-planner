@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { StyleSheet, Text, TextInput, View, type TextInputProps } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { radius, spacing, useTheme } from '@/shared/theme';
+import { radius, spacing, typography, useTheme } from '@/shared/theme';
 
 type FormFieldProps = {
   label: string;
@@ -73,11 +73,10 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   label: {
-    fontSize: 15,
-    fontWeight: '600',
+    ...typography.bodySemibold,
   },
   optional: {
-    fontSize: 13,
+    ...typography.footnote,
   },
   input: {
     minHeight: 48,
@@ -85,13 +84,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
-    fontSize: 16,
+    ...typography.large,
   },
   multiline: {
     minHeight: 96,
     textAlignVertical: 'top',
   },
   error: {
-    fontSize: 13,
+    ...typography.footnote,
   },
 });

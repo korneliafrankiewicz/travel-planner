@@ -8,7 +8,7 @@ import {
 } from '@/modules/settings/screens/Settings/store/settingsStore';
 import { useTripsHydrated } from '@/modules/trips/screens/TripList/store/tripsStore';
 import '@/shared/i18n';
-import { ThemeProvider, useTheme } from '@/shared/theme';
+import { navigationFonts, ThemeProvider, useTheme } from '@/shared/theme';
 
 // Keep the native splash screen visible until the persisted settings (theme, language) and
 // trips are loaded and applied, so the app never flashes the wrong theme, language or data.
@@ -28,12 +28,7 @@ const NavigationShell = () => {
         border: colors.border,
         notification: colors.danger,
       },
-      fonts: {
-        regular: { fontFamily: 'System', fontWeight: '400' },
-        medium: { fontFamily: 'System', fontWeight: '500' },
-        bold: { fontFamily: 'System', fontWeight: '700' },
-        heavy: { fontFamily: 'System', fontWeight: '800' },
-      },
+      fonts: navigationFonts,
     }),
     [colors, scheme],
   );

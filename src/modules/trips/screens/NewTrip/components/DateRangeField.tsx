@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { radius, spacing, useTheme } from '@/shared/theme';
+import { radius, spacing, typography, useTheme } from '@/shared/theme';
 
 import { formatDateRange, getTripDayCount } from '../../TripList/utils/tripDates';
 import { DateRangeCalendar } from './DateRangeCalendar';
@@ -65,8 +65,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   label: {
-    fontSize: 15,
-    fontWeight: '600',
+    ...typography.bodySemibold,
   },
   chip: {
     borderRadius: radius.pill,
@@ -74,13 +73,12 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xs,
   },
   chipLabel: {
-    fontSize: 12,
-    fontWeight: '700',
+    ...typography.captionBold,
   },
   summary: {
-    fontSize: 14,
+    ...typography.small,
   },
   error: {
-    fontSize: 13,
+    ...typography.footnote,
   },
 });

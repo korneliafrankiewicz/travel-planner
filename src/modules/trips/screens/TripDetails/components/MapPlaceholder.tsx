@@ -2,7 +2,7 @@ import { SymbolView } from 'expo-symbols';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { radius, spacing, useTheme } from '@/shared/theme';
+import { radius, spacing, typography, useTheme } from '@/shared/theme';
 import { PillButton } from '@/shared/ui/PillButton';
 
 const ICON_CIRCLE_SIZE = 64;
@@ -53,8 +53,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   sectionTitle: {
-    fontSize: 15,
-    fontWeight: '600',
+    ...typography.bodySemibold,
   },
   card: {
     borderRadius: radius.lg,
@@ -72,12 +71,11 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   destination: {
-    fontSize: 17,
-    fontWeight: '700',
+    ...typography.cardTitle,
     textAlign: 'center',
   },
   hint: {
-    fontSize: 14,
+    ...typography.small,
     textAlign: 'center',
   },
   button: {

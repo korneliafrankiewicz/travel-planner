@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { radius, spacing, useTheme } from '@/shared/theme';
+import { radius, spacing, typography, useTheme } from '@/shared/theme';
 
 import type { Trip } from '../store/tripsStore';
 import {
@@ -84,8 +84,7 @@ const styles = StyleSheet.create({
   },
   title: {
     flex: 1,
-    fontSize: 18,
-    fontWeight: '700',
+    ...typography.cardTitle,
   },
   badge: {
     borderRadius: radius.pill,
@@ -93,10 +92,9 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xs,
   },
   badgeLabel: {
-    fontSize: 12,
-    fontWeight: '700',
+    ...typography.captionBold,
   },
   detail: {
-    fontSize: 14,
+    ...typography.small,
   },
 });

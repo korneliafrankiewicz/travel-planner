@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, type StyleProp, type ViewStyle } from 'react-native';
 
-import { radius, spacing, useTheme } from '@/shared/theme';
+import { radius, spacing, typography, useTheme } from '@/shared/theme';
 
 type PillButtonProps = {
   label: string;
@@ -38,7 +38,6 @@ const styles = StyleSheet.create({
     opacity: 0.85,
   },
   label: {
-    fontSize: 16,
-    fontWeight: '700',
+    ...typography.largeBold,
   },
 });

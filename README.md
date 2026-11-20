@@ -24,6 +24,7 @@ npx expo start
 - Use arrow functions for components, hooks and helpers.
 - Structure: `src/modules/<module>/screens/<Screen>/`, with `components`, `hooks`, `schema`, `store` and `utils` subfolders created only when needed. Route files in `src/app/` are thin re-exports.
 - Two themes (light and dark) and two languages (en and pl) from the start. No hard-coded colors or user-facing strings in components.
+- Font sizes and weights come from the `typography` text styles in `src/shared/theme/typography.ts`, never inline.
 - Secure storage holds tokens only, never passwords.
 - Install packages with `npx expo install`.
 - Before a task is done, lint (`npx expo lint`) and typecheck (`npx tsc --noEmit`) must pass.

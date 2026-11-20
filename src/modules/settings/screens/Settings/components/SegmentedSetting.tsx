@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { spacing, useTheme } from '@/shared/theme';
+import { spacing, typography, useTheme } from '@/shared/theme';
 import { SegmentedControl, type SegmentedOption } from '@/shared/ui/SegmentedControl';
 
 type SegmentedSettingProps<T extends string> = {
@@ -33,7 +33,6 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   label: {
-    fontSize: 16,
-    fontWeight: '600',
+    ...typography.largeSemibold,
   },
 });

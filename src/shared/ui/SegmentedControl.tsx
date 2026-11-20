@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { radius, spacing, useTheme } from '@/shared/theme';
+import { radius, spacing, typography, useTheme } from '@/shared/theme';
 
 export type SegmentedOption<T extends string> = {
   value: T;
@@ -66,7 +66,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.sm,
   },
   segmentLabel: {
-    fontSize: 14,
-    fontWeight: '600',
+    ...typography.smallSemibold,
   },
 });

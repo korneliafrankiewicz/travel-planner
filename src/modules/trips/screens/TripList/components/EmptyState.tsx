@@ -1,7 +1,7 @@
 import { SymbolView } from 'expo-symbols';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { spacing, useTheme } from '@/shared/theme';
+import { spacing, typography, useTheme } from '@/shared/theme';
 import { PillButton } from '@/shared/ui/PillButton';
 
 type EmptyStateProps = {
@@ -38,8 +38,7 @@ const styles = StyleSheet.create({
     padding: spacing.xl,
   },
   message: {
-    fontSize: 16,
-    fontWeight: '500',
+    ...typography.largeMedium,
     textAlign: 'center',
   },
 });

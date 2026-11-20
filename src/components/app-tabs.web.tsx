@@ -10,7 +10,7 @@ import type { ComponentProps } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { maxContentWidth, radius, spacing, useTheme } from '@/shared/theme';
+import { maxContentWidth, radius, spacing, typography, useTheme } from '@/shared/theme';
 
 const AppTabs = () => {
   const { t } = useTranslation('common');
@@ -104,7 +104,6 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
   },
   tabLabel: {
-    fontSize: 14,
-    fontWeight: '600',
+    ...typography.smallSemibold,
   },
 });

@@ -10,7 +10,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
-import { maxContentWidth, spacing, useTheme } from '@/shared/theme';
+import { maxContentWidth, spacing, typography, useTheme } from '@/shared/theme';
 import { PillButton } from '@/shared/ui/PillButton';
 
 import type { TripFormState } from '../hooks/useTripForm';
@@ -107,12 +107,10 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.lg,
   },
   title: {
-    fontSize: 28,
-    fontWeight: '700',
+    ...typography.modalTitle,
   },
   cancel: {
-    fontSize: 16,
-    fontWeight: '600',
+    ...typography.largeSemibold,
   },
   form: {
     width: '100%',

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { spacing, useTheme } from '@/shared/theme';
+import { spacing, typography, useTheme } from '@/shared/theme';
 
 const DISABLED_OPACITY = 0.7;
 
@@ -62,11 +62,10 @@ const styles = StyleSheet.create({
   },
   title: {
     flexShrink: 1,
-    fontSize: 16,
-    fontWeight: '500',
+    ...typography.largeMedium,
   },
   hint: {
-    fontSize: 14,
+    ...typography.small,
   },
   disabled: {
     opacity: DISABLED_OPACITY,

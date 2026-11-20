@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { radius, spacing, useTheme } from '@/shared/theme';
+import { fontWeight, radius, spacing, typography, useTheme } from '@/shared/theme';
 
 import { parseLocalDate, toIsoDate } from '../../TripList/utils/tripDates';
 import { addMonths, getMonthGrid, startOfMonth } from '../utils/calendar';
@@ -171,8 +171,7 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.sm,
   },
   monthLabel: {
-    fontSize: 16,
-    fontWeight: '700',
+    ...typography.largeBold,
     textTransform: 'capitalize',
   },
   weekRow: {
@@ -181,8 +180,7 @@ const styles = StyleSheet.create({
   weekdayLabel: {
     flex: 1,
     textAlign: 'center',
-    fontSize: 12,
-    fontWeight: '600',
+    ...typography.captionSemibold,
     paddingVertical: spacing.xs,
   },
   dayCell: {
@@ -199,8 +197,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   dayLabel: {
-    fontSize: 15,
-    fontWeight: '500',
+    ...typography.bodyMedium,
   },
   disabledLabel: {
     opacity: 0.35,
@@ -209,7 +206,7 @@ const styles = StyleSheet.create({
     opacity: 0.35,
   },
   todayLabel: {
-    fontWeight: '800',
+    fontWeight: fontWeight.heavy,
     textDecorationLine: 'underline',
   },
 });

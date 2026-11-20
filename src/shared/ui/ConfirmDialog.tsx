@@ -1,6 +1,6 @@
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { radius, spacing, useTheme } from '@/shared/theme';
+import { radius, spacing, typography, useTheme } from '@/shared/theme';
 
 const SCRIM_OPACITY = 0.5;
 
@@ -89,12 +89,10 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   title: {
-    fontSize: 20,
-    fontWeight: '700',
+    ...typography.dialogTitle,
   },
   message: {
-    fontSize: 15,
-    lineHeight: 22,
+    ...typography.body,
   },
   actions: {
     flexDirection: 'row',
@@ -110,8 +108,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
   },
   actionLabel: {
-    fontSize: 15,
-    fontWeight: '700',
+    ...typography.bodyBold,
   },
   pressed: {
     opacity: 0.8,

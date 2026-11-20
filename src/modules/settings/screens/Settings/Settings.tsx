@@ -3,7 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import type { AppLanguage } from '@/shared/i18n';
-import { maxContentWidth, spacing, useTheme, webTabBarInset, type ThemeScheme } from '@/shared/theme';
+import { maxContentWidth, spacing, typography, useTheme, webTabBarInset, type ThemeScheme } from '@/shared/theme';
 import type { SegmentedOption } from '@/shared/ui/SegmentedControl';
 
 import { SegmentedSetting } from './components/SegmentedSetting';
@@ -105,7 +105,6 @@ const styles = StyleSheet.create({
     gap: spacing.xl,
   },
   title: {
-    fontSize: 32,
-    fontWeight: '700',
+    ...typography.screenTitle,
   },
 });

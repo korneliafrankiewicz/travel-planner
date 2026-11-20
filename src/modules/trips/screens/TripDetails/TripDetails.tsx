@@ -5,7 +5,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
-import { maxContentWidth, radius, spacing, useTheme } from '@/shared/theme';
+import { maxContentWidth, radius, spacing, typography, useTheme } from '@/shared/theme';
 import { ConfirmDialog } from '@/shared/ui/ConfirmDialog';
 import { IconButton } from '@/shared/ui/IconButton';
 
@@ -175,11 +175,10 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
   },
   title: {
-    fontSize: 32,
-    fontWeight: '700',
+    ...typography.screenTitle,
   },
   destination: {
-    fontSize: 16,
+    ...typography.large,
   },
   dateRow: {
     flexDirection: 'row',
@@ -189,8 +188,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
   dates: {
-    fontSize: 16,
-    fontWeight: '600',
+    ...typography.largeSemibold,
   },
   chip: {
     borderRadius: radius.pill,
@@ -198,18 +196,16 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xs,
   },
   chipLabel: {
-    fontSize: 12,
-    fontWeight: '700',
+    ...typography.captionBold,
   },
   stops: {
-    fontSize: 14,
+    ...typography.small,
   },
   notes: {
     gap: spacing.sm,
   },
   sectionTitle: {
-    fontSize: 15,
-    fontWeight: '600',
+    ...typography.bodySemibold,
   },
   notesCard: {
     borderRadius: radius.lg,
@@ -217,7 +213,6 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
   },
   notesText: {
-    fontSize: 15,
-    lineHeight: 22,
+    ...typography.body,
   },
 });

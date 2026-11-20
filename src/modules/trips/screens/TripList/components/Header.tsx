@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { Avatar } from '@/shared/ui/Avatar';
-import { useTheme } from '@/shared/theme';
+import { typography, useTheme } from '@/shared/theme';
 
 // TODO: replace with the initials of the signed-in user once accounts exist.
 const PLACEHOLDER_INITIALS = 'AB';
@@ -29,7 +29,6 @@ const styles = StyleSheet.create({
   },
   title: {
     flexShrink: 1,
-    fontSize: 32,
-    fontWeight: '700',
+    ...typography.screenTitle,
   },
 });

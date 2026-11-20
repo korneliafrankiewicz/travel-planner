@@ -1,6 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { useTheme } from '@/shared/theme';
+import { fontWeight, useTheme } from '@/shared/theme';
+
+// Initials take up this fraction of the avatar's size.
+const INITIALS_FONT_RATIO = 0.38;
 
 type AvatarProps = {
   initials: string;
@@ -20,7 +23,7 @@ export const Avatar = ({ initials, label, size = 44 }: AvatarProps) => {
         styles.circle,
         { width: size, height: size, borderRadius: size / 2, backgroundColor: colors.accent },
       ]}>
-      <Text style={[styles.initials, { color: colors.onAccent, fontSize: size * 0.38 }]}>
+      <Text style={[styles.initials, { color: colors.onAccent, fontSize: size * INITIALS_FONT_RATIO }]}>
         {initials}
       </Text>
     </View>
@@ -33,6 +36,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   initials: {
-    fontWeight: '700',
+    fontWeight: fontWeight.bold,
   },
 });

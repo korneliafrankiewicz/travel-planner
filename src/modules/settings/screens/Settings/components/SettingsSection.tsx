@@ -1,7 +1,7 @@
 import { Children, Fragment, type ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { radius, spacing, useTheme } from '@/shared/theme';
+import { radius, spacing, typography, useTheme } from '@/shared/theme';
 
 type SettingsSectionProps = {
   title: string;
@@ -34,10 +34,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   title: {
-    fontSize: 13,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    ...typography.sectionHeader,
     paddingHorizontal: spacing.xs,
   },
   card: {
