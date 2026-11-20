@@ -1,30 +1,32 @@
 import { NativeTabs } from 'expo-router/native-tabs';
-import { useColorScheme } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
-import { Colors } from '@/constants/theme';
+import { useTheme } from '@/shared/theme';
 
 const AppTabs = () => {
-  const scheme = useColorScheme();
-  const colors = Colors[scheme === 'dark' ? 'dark' : 'light'];
+  const { t } = useTranslation('common');
+  const { colors } = useTheme();
 
   return (
     <NativeTabs
-      backgroundColor={colors.background}
-      indicatorColor={colors.backgroundElement}
-      labelStyle={{ selected: { color: colors.text } }}>
+      backgroundColor={colors.surface}
+      indicatorColor={colors.surfaceSelected}
+      tintColor={colors.accent}
+      iconColor={{ default: colors.textSecondary, selected: colors.accent }}
+      labelStyle={{
+        default: { color: colors.textSecondary },
+        selected: { color: colors.accent },
+      }}>
       <NativeTabs.Trigger name="index">
-        <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon
-          src={require('@/assets/images/tabIcons/home.png')}
-          renderingMode="template"
-        />
+        <NativeTabs.Trigger.Label>{t('tabs.trips')}</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf={{ default: 'house', selected: 'house.fill' }} md="home" />
       </NativeTabs.Trigger>
 
-      <NativeTabs.Trigger name="explore">
-        <NativeTabs.Trigger.Label>Explore</NativeTabs.Trigger.Label>
+      <NativeTabs.Trigger name="settings">
+        <NativeTabs.Trigger.Label>{t('tabs.settings')}</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon
-          src={require('@/assets/images/tabIcons/explore.png')}
-          renderingMode="template"
+          sf={{ default: 'gearshape', selected: 'gearshape.fill' }}
+          md="settings"
         />
       </NativeTabs.Trigger>
     </NativeTabs>
