@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { spacing, typography, useTheme } from '@/shared/theme';
 
@@ -13,6 +13,8 @@ type SettingsRowProps = {
   trailing?: ReactNode;
   destructive?: boolean;
   disabled?: boolean;
+  // Makes the row a button. Without it the row only shows information.
+  onPress?: () => void;
   accessibilityRole?: 'button' | 'switch';
   // Only for `accessibilityRole="switch"`.
   checked?: boolean;
@@ -25,10 +27,37 @@ export const SettingsRow = ({
   trailing,
   destructive = false,
   disabled = false,
+  onPress,
   accessibilityRole = 'button',
   checked,
 }: SettingsRowProps) => {
   const { colors } = useTheme();
+
+  const content = (
+    <>
+      <Text style={[styles.title, { color: destructive ? colors.danger : colors.textPrimary }]}>
+        {title}
+      </Text>
+      {trailing ?? (
+        hint !== undefined && (
+          <Text style={[styles.hint, { color: colors.textSecondary }]}>{hint}</Text>
+        )
+      )}
+    </>
+  );
+
+  if (onPress !== undefined && !disabled) {
+    return (
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={title}
+        accessibilityHint={hint}
+        onPress={onPress}
+        style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
+        {content}
+      </Pressable>
+    );
+  }
 
   return (
     <View
@@ -38,14 +67,7 @@ export const SettingsRow = ({
       accessibilityHint={hint}
       accessibilityState={{ disabled, checked }}
       style={[styles.row, disabled && styles.disabled]}>
-      <Text style={[styles.title, { color: destructive ? colors.danger : colors.textPrimary }]}>
-        {title}
-      </Text>
-      {trailing ?? (
-        hint !== undefined && (
-          <Text style={[styles.hint, { color: colors.textSecondary }]}>{hint}</Text>
-        )
-      )}
+      {content}
     </View>
   );
 };
@@ -69,5 +91,8 @@ const styles = StyleSheet.create({
   },
   disabled: {
     opacity: DISABLED_OPACITY,
+  },
+  pressed: {
+    opacity: 0.7,
   },
 });

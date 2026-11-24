@@ -1,9 +1,12 @@
+import { useState } from 'react';
 import { ScrollView, StyleSheet, Switch, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import type { AppLanguage } from '@/shared/i18n';
 import { maxContentWidth, spacing, typography, useTheme, webTabBarInset, type ThemeScheme } from '@/shared/theme';
+import { resetSampleData } from '@/modules/trips/screens/TripList/store/resetSampleData';
+import { ConfirmDialog } from '@/shared/ui/ConfirmDialog';
 import type { SegmentedOption } from '@/shared/ui/SegmentedControl';
 
 import { ProfileCard } from './components/ProfileCard';
@@ -19,6 +22,14 @@ const Settings = () => {
   const language = useSettingsStore((state) => state.language);
   const setTheme = useSettingsStore((state) => state.setTheme);
   const setLanguage = useSettingsStore((state) => state.setLanguage);
+  const [confirmingReset, setConfirmingReset] = useState(false);
+  const [resetDone, setResetDone] = useState(false);
+
+  const handleReset = () => {
+    resetSampleData();
+    setConfirmingReset(false);
+    setResetDone(true);
+  };
 
   const themeOptions: SegmentedOption<ThemeScheme>[] = [
     { value: 'light', label: t('theme.options.light') },
@@ -88,7 +99,31 @@ const Settings = () => {
             disabled
           />
         </SettingsSection>
+
+        {/* For testing only: replaces saved trips with the sample ones. Never shown to users. */}
+        {__DEV__ && (
+          <SettingsSection title={t('sections.developer')}>
+            <SettingsRow
+              title={t('developer.resetSampleData.title')}
+              hint={resetDone ? t('developer.resetSampleData.done') : t('developer.resetSampleData.hint')}
+              onPress={() => {
+                setResetDone(false);
+                setConfirmingReset(true);
+              }}
+            />
+          </SettingsSection>
+        )}
       </ScrollView>
+
+      <ConfirmDialog
+        visible={confirmingReset}
+        title={t('developer.resetSampleData.confirm.title')}
+        message={t('developer.resetSampleData.confirm.message')}
+        confirmLabel={t('developer.resetSampleData.confirm.confirm')}
+        cancelLabel={t('developer.resetSampleData.confirm.cancel')}
+        onConfirm={handleReset}
+        onCancel={() => setConfirmingReset(false)}
+      />
     </SafeAreaView>
   );
 };

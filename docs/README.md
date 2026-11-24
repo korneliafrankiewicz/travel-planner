@@ -20,9 +20,9 @@ together.
 
 - The app keeps everything **on the device**. There is no backend yet. Places in the code that
   will change when it exists are marked `TODO` (for example in `tripsStore.ts`).
-- Trips and stops start from **sample data** on the very first launch. See
-  [Troubleshooting](troubleshooting.md#i-do-not-see-the-maps-or-the-route) for what that means
-  when you test.
+- Trips and stops start from **sample data** on the very first launch. To get it back while
+  testing, use **Settings > Developer > Reset sample data** (development only). See
+  [Troubleshooting](troubleshooting.md#i-do-not-see-the-maps-or-the-route).
 - Not done yet: sign-in, the Security and Account sections of Settings, walking or driving
   routes (distances are straight lines), and the Google Maps API key that Android release
   builds need.

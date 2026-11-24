@@ -12,6 +12,8 @@ type StopsState = {
   updateStop: (id: string, input: StopInput) => void;
   deleteStop: (id: string) => void;
   deleteTripStops: (tripId: string) => void;
+  // Replaces every saved stop with the sample stops. Used by the development reset.
+  resetToSamples: () => void;
 };
 
 // TODO: replace the hard-coded sample stops with real data once the backend exists.
@@ -143,6 +145,7 @@ export const useStopsStore = create<StopsState>()(
       deleteStop: (id) => set((state) => ({ stops: state.stops.filter((stop) => stop.id !== id) })),
       deleteTripStops: (tripId) =>
         set((state) => ({ stops: state.stops.filter((stop) => stop.tripId !== tripId) })),
+      resetToSamples: () => set({ stops: sampleStops }),
     }),
     {
       name: 'stops',

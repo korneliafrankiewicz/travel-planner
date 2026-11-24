@@ -105,6 +105,12 @@ break and the Tatra Mountains). Once anything is saved, the saved data **replace
 samples, even an empty list. The samples are never merged into saved data, so a change to the
 samples in code is not visible on a device that already has saved data.
 
+To get the samples back, development builds have **Settings > Developer > Reset sample
+data**. It calls `resetSampleData` (`TripList/store/resetSampleData.ts`), which resets the
+trips and the stops **together** so no stop is left without its trip. The section is shown
+only when `__DEV__` is true, so it never reaches users of a release build. It does not touch
+the theme or the language.
+
 ## Forms
 
 Forms follow one pattern (`NewTrip`, `StopForm`):

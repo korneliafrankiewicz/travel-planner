@@ -19,6 +19,8 @@ type TripsState = {
   addTrip: (input: NewTripInput) => void;
   updateTrip: (id: string, input: NewTripInput) => void;
   deleteTrip: (id: string) => void;
+  // Replaces every saved trip with the sample trips. Used by the development reset.
+  resetToSamples: () => void;
 };
 
 // TODO: replace the hard-coded sample trips with real data once the backend exists.
@@ -65,6 +67,7 @@ export const useTripsStore = create<TripsState>()(
         // A trip's stops make no sense without the trip.
         useStopsStore.getState().deleteTripStops(id);
       },
+      resetToSamples: () => set({ trips: sampleTrips }),
     }),
     {
       name: 'trips',

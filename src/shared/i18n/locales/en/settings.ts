@@ -5,6 +5,7 @@ export const settings = {
     appearance: 'Appearance',
     security: 'Security',
     account: 'Account',
+    developer: 'Developer',
   },
   theme: {
     title: 'Theme',
@@ -38,6 +39,19 @@ export const settings = {
     },
     deleteAccount: {
       title: 'Delete account and data',
+    },
+  },
+  developer: {
+    resetSampleData: {
+      title: 'Reset sample data',
+      hint: 'Restore the sample trips',
+      done: 'Sample data restored',
+      confirm: {
+        title: 'Reset sample data?',
+        message: 'All trips and stops on this device will be replaced by the sample trips (Lisbon and the Tatra Mountains). This cannot be undone.',
+        confirm: 'Reset',
+        cancel: 'Cancel',
+      },
     },
   },
 } as const;

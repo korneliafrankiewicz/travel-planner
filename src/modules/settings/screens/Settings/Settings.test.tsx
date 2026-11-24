@@ -1,5 +1,7 @@
 import { screen, userEvent } from '@testing-library/react-native';
 
+import { useStopsStore } from '@/modules/trips/screens/TripList/store/stopsStore';
+import { useTripsStore } from '@/modules/trips/screens/TripList/store/tripsStore';
 import { i18n } from '@/shared/i18n';
 import { renderWithProviders } from '@/test-utils/renderWithProviders';
 
@@ -117,5 +119,111 @@ describe('Settings screen', () => {
       await renderWithProviders(<Settings />);
       expect(screen.getAllByText('Coming soon').length).toBeGreaterThan(0);
     });
+  });
+});
+
+describe('developer section', () => {
+  const myTrip = {
+    id: 'my-trip',
+    title: 'My trip',
+    destination: '',
+    notes: '',
+    startDate: '2027-01-10',
+    endDate: '2027-01-12',
+  };
+
+  beforeEach(() => {
+    useTripsStore.setState({ trips: [myTrip] });
+    useStopsStore.setState({ stops: [] });
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it('is shown during development', async () => {
+    await renderWithProviders(<Settings />);
+
+    expect(screen.getByRole('header', { name: 'Developer' })).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Reset sample data' })).toBeVisible();
+  });
+
+  it('is never shown to users of a release build', async () => {
+    jest.replaceProperty(globalThis as unknown as { __DEV__: boolean }, '__DEV__', false);
+    await renderWithProviders(<Settings />);
+
+    expect(screen.queryByRole('header', { name: 'Developer' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Reset sample data' })).toBeNull();
+  });
+
+  it('asks for confirmation first and does not change anything yet', async () => {
+    const user = userEvent.setup();
+    await renderWithProviders(<Settings />);
+
+    await user.press(screen.getByRole('button', { name: 'Reset sample data' }));
+
+    expect(screen.getByRole('header', { name: 'Reset sample data?' })).toBeVisible();
+    expect(screen.getByText(/All trips and stops on this device will be replaced/)).toBeVisible();
+    expect(useTripsStore.getState().trips).toEqual([myTrip]);
+  });
+
+  it('keeps the data when the reset is cancelled', async () => {
+    const user = userEvent.setup();
+    await renderWithProviders(<Settings />);
+
+    await user.press(screen.getByRole('button', { name: 'Reset sample data' }));
+    await user.press(screen.getByRole('button', { name: 'Cancel' }));
+
+    expect(useTripsStore.getState().trips).toEqual([myTrip]);
+    expect(screen.queryByText('Reset sample data?')).toBeNull();
+    expect(screen.queryByText('Sample data restored')).toBeNull();
+  });
+
+  it('replaces the trips and stops with the sample data when confirmed, and says so', async () => {
+    const user = userEvent.setup();
+    await renderWithProviders(<Settings />);
+
+    await user.press(screen.getByRole('button', { name: 'Reset sample data' }));
+    await user.press(screen.getByRole('button', { name: 'Reset' }));
+
+    expect(useTripsStore.getState().trips.map((trip) => trip.id)).toEqual([
+      'sample-lisbon',
+      'sample-tatra',
+    ]);
+    expect(useStopsStore.getState().stops.length).toBeGreaterThan(0);
+    expect(screen.queryByText('Reset sample data?')).toBeNull();
+    expect(screen.getByText('Sample data restored')).toBeVisible();
+  });
+
+  it('does not touch the theme or the language', async () => {
+    useSettingsStore.setState({ theme: 'dark', language: 'en' });
+    const user = userEvent.setup();
+    await renderWithProviders(<Settings />, { scheme: 'dark' });
+
+    await user.press(screen.getByRole('button', { name: 'Reset sample data' }));
+    await user.press(screen.getByRole('button', { name: 'Reset' }));
+
+    expect(useSettingsStore.getState()).toMatchObject({ theme: 'dark', language: 'en' });
+  });
+
+  it('is in Polish when the app is', async () => {
+    useSettingsStore.setState({ language: 'pl' });
+    await i18n.changeLanguage('pl');
+    const user = userEvent.setup();
+    await renderWithProviders(<Settings />, { language: 'pl' });
+
+    expect(screen.getByRole('header', { name: 'Deweloper' })).toBeVisible();
+    await user.press(screen.getByRole('button', { name: 'Przywróć dane przykładowe' }));
+
+    expect(screen.getByRole('header', { name: 'Przywrócić dane przykładowe?' })).toBeVisible();
+    expect(screen.getByText(/Wszystkie podróże i punkty na tym urządzeniu/)).toBeVisible();
+  });
+
+  it('leaves the placeholder rows in the other sections disabled', async () => {
+    await renderWithProviders(<Settings />);
+
+    expect(screen.getByRole('button', { name: 'Change PIN' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Log out' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Reset sample data' })).toBeEnabled();
   });
 });

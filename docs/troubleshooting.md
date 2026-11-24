@@ -22,6 +22,9 @@ Work down this list.
    before coordinates existed have none. You can:
    - **Add a place to a stop:** open the stop, search for a place (for example `Belem Tower`),
      choose it and save. Do it for a second stop of the same day to get the route.
+   - **Reset the sample data:** open **Settings > Developer > Reset sample data** and
+     confirm. All trips and stops are replaced by the sample trips, which have places. This
+     section only exists in development, never in a release build.
    - **Start fresh:** clear the app's saved data (see below). The sample trips come back, with
      places.
 4. **Is the day in the past?** You can open and view past days, but stops can only be **added**
@@ -29,7 +32,9 @@ Work down this list.
 
 ### Clearing the saved data
 
-All trips, stops and settings are cleared. This cannot be undone.
+All trips, stops and settings are cleared. This cannot be undone. If you only need the sample
+trips back, **Settings > Developer > Reset sample data** is quicker and keeps your theme and
+language.
 
 - **iOS Simulator:** *Device > Erase All Content and Settings*, or delete Expo Go and
   install it again.

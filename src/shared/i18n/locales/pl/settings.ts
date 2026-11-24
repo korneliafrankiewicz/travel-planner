@@ -8,6 +8,7 @@ export const settings: Translations<typeof en> = {
     appearance: 'Wygląd',
     security: 'Zabezpieczenia',
     account: 'Konto',
+    developer: 'Deweloper',
   },
   theme: {
     title: 'Motyw',
@@ -40,6 +41,19 @@ export const settings: Translations<typeof en> = {
     },
     deleteAccount: {
       title: 'Usuń konto i dane',
+    },
+  },
+  developer: {
+    resetSampleData: {
+      title: 'Przywróć dane przykładowe',
+      hint: 'Przywróć przykładowe podróże',
+      done: 'Przywrócono dane przykładowe',
+      confirm: {
+        title: 'Przywrócić dane przykładowe?',
+        message: 'Wszystkie podróże i punkty na tym urządzeniu zostaną zastąpione przykładowymi podróżami (Lizbona i Tatry). Tej operacji nie można cofnąć.',
+        confirm: 'Przywróć',
+        cancel: 'Anuluj',
+      },
     },
   },
 };
