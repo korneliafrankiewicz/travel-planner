@@ -44,6 +44,10 @@ export const trips = {
     message: '"{{title}}" and all its details will be removed. This cannot be undone.',
     confirm: 'Delete',
   },
+  distance: {
+    meters: '{{value}} m',
+    kilometers: '{{value}} km',
+  },
   itinerary: {
     title: 'Itinerary',
     day: 'Day {{number}}',
@@ -51,8 +55,18 @@ export const trips = {
     addStop: 'Add stop',
     empty: 'No stops planned yet',
     overlap: 'Overlaps with another stop',
+    route: {
+      show: 'Show route on map',
+      hide: 'Hide route',
+      summary: '{{stops}} · {{distance}}',
+      mapLabel: 'Map of the day’s route',
+      leg: '{{fromOrder}}. {{from}} → {{toOrder}}. {{to}}',
+      legAccessible: 'From {{from}} to {{to}}, {{distance}}',
+      straightLine: 'Distances are in a straight line between stops, not the length of a walking or driving route.',
+    },
   },
   stop: {
+    locationPreview: 'Map showing where the stop is',
     newTitle: 'New stop',
     editTitle: 'Edit stop',
     save: 'Save stop',

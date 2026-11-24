@@ -1,4 +1,4 @@
-import { fireEvent, screen, userEvent } from '@testing-library/react-native';
+import { fireEvent, screen, userEvent, within } from '@testing-library/react-native';
 import { Platform } from 'react-native';
 
 import { renderWithProviders } from '@/test-utils/renderWithProviders';
@@ -48,8 +48,11 @@ const renderForm = (values?: Partial<StopFormValues>) => {
   return { onSave, ready: renderWithProviders(<Harness values={values} onSave={onSave} />) };
 };
 
+const PICKER_MAP = 'Map for choosing a location';
+const PREVIEW_MAP = 'Map showing where the stop is';
+
 const tapMap = async (latitude: number, longitude: number) =>
-  await fireEvent(screen.getByTestId('map-view'), 'press', {
+  await fireEvent(screen.getByLabelText(PICKER_MAP), 'press', {
     nativeEvent: { coordinate: { latitude, longitude } },
   });
 
@@ -60,6 +63,7 @@ beforeEach(() => {
 
 afterEach(() => {
   jest.useRealTimers();
+  jest.restoreAllMocks();
 });
 
 describe('StopForm location', () => {
@@ -73,7 +77,7 @@ describe('StopForm location', () => {
     await user.press(screen.getByRole('button', { name: 'Use this location' }));
 
     // The picker is closed and the chosen place is in the fields.
-    expect(screen.queryByTestId('map-view')).toBeNull();
+    expect(screen.queryByLabelText(PICKER_MAP)).toBeNull();
     expect(screen.getByDisplayValue('38.69163')).toBeVisible();
     expect(screen.getByDisplayValue('-9.21602')).toBeVisible();
 
@@ -94,7 +98,7 @@ describe('StopForm location', () => {
     // is the last one.
     await user.press(screen.getAllByRole('button', { name: 'Cancel' }).at(-1)!);
 
-    expect(screen.queryByTestId('map-view')).toBeNull();
+    expect(screen.queryByLabelText(PICKER_MAP)).toBeNull();
     expect(screen.queryByDisplayValue('38.7')).toBeNull();
 
     await user.press(screen.getByRole('button', { name: 'Save stop' }));
@@ -108,7 +112,9 @@ describe('StopForm location', () => {
 
     await user.press(screen.getByRole('button', { name: 'Change on map' }));
 
-    expect(screen.getByRole('button', { name: 'pin at 49.2992, 19.9496' })).toBeVisible();
+    // The preview behind the picker has a pin for the same place, so look inside the picker.
+    const pickerMap = screen.getByLabelText(PICKER_MAP);
+    expect(within(pickerMap).getByRole('button', { name: 'pin at 49.2992, 19.9496' })).toBeVisible();
   });
 
   it('opens without a pin when the fields hold something that is not a place yet', async () => {
@@ -162,5 +168,43 @@ describe('StopForm location', () => {
 
     expect(screen.queryByRole('button', { name: 'Choose on map' })).toBeNull();
     expect(screen.getByText('Latitude')).toBeVisible();
+  });
+
+  describe('preview of the place', () => {
+    it('shows no map while the stop has no place', async () => {
+      await renderForm().ready;
+      expect(screen.queryByLabelText(PREVIEW_MAP)).toBeNull();
+    });
+
+    it('shows a map with a pin for the place the stop already has', async () => {
+      await renderForm({ latitude: '49.2992', longitude: '19.9496' }).ready;
+
+      expect(screen.getByLabelText(PREVIEW_MAP)).toBeVisible();
+      expect(screen.getByRole('button', { name: 'pin at 49.2992, 19.9496' })).toBeVisible();
+    });
+
+    it('appears once a place is chosen on the map, and goes when the place is cleared', async () => {
+      const user = userEvent.setup();
+      await renderForm().ready;
+
+      await user.press(screen.getByRole('button', { name: 'Choose on map' }));
+      await tapMap(38.7, -9.1);
+      await user.press(screen.getByRole('button', { name: 'Use this location' }));
+      expect(screen.getByLabelText(PREVIEW_MAP)).toBeVisible();
+
+      await user.press(screen.getByRole('button', { name: 'Clear location' }));
+      expect(screen.queryByLabelText(PREVIEW_MAP)).toBeNull();
+    });
+
+    it('does not show a map for coordinates that are not valid yet', async () => {
+      await renderForm({ latitude: '49.2992', longitude: '' }).ready;
+      expect(screen.queryByLabelText(PREVIEW_MAP)).toBeNull();
+    });
+
+    it('is not shown on the web', async () => {
+      jest.replaceProperty(Platform, 'OS', 'web');
+      await renderForm({ latitude: '49.2992', longitude: '19.9496' }).ready;
+      expect(screen.queryByLabelText(PREVIEW_MAP)).toBeNull();
+    });
   });
 });

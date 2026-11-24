@@ -204,4 +204,62 @@ describe('ItinerarySection', () => {
       expect(screen.queryByRole('button', { name: 'Add stop, Sun, Dec 20' })).toBeNull();
     });
   });
+
+  describe('route of a day', () => {
+    const placed = (id: string, date: string, startTime: string, latitude: number, longitude: number) => ({
+      ...stop(id, date, startTime, 30),
+      coordinates: { latitude, longitude },
+    });
+
+    it('offers a route for a day with two stops that have a place, in the order of the day', async () => {
+      const user = userEvent.setup();
+      useStopsStore.setState({
+        stops: [
+          placed('Lunch', '2026-12-13', '13:00', 38.6916, -9.216),
+          placed('Hotel', '2026-12-13', '09:00', 38.7223, -9.1393),
+        ],
+      });
+      await renderWithProviders(<ItinerarySection trip={trip} />);
+
+      await user.press(screen.getByRole('button', { name: /Show route on map/ }));
+
+      // The morning stop comes first even though it was saved last.
+      expect(screen.getByText('1. Hotel → 2. Lunch')).toBeVisible();
+      expect(screen.getAllByText('7.5 km').length).toBeGreaterThan(0);
+    });
+
+    it('offers no route for a day with a single place, or none', async () => {
+      useStopsStore.setState({
+        stops: [
+          placed('Hotel', '2026-12-13', '09:00', 38.7223, -9.1393),
+          stop('Lunch', '2026-12-13', '13:00', 30),
+          stop('Walk', '2026-12-14', '10:00', 30),
+        ],
+      });
+      await renderWithProviders(<ItinerarySection trip={trip} />);
+
+      expect(screen.queryByRole('button', { name: /Show route on map/ })).toBeNull();
+    });
+
+    it('keeps the days apart: each day only joins its own stops', async () => {
+      const user = userEvent.setup();
+      useStopsStore.setState({
+        stops: [
+          placed('A1', '2026-12-13', '09:00', 38.7223, -9.1393),
+          placed('A2', '2026-12-13', '10:00', 38.6916, -9.216),
+          placed('B1', '2026-12-14', '09:00', 41.1579, -8.6291),
+          placed('B2', '2026-12-14', '10:00', 41.1496, -8.611),
+        ],
+      });
+      await renderWithProviders(<ItinerarySection trip={trip} />);
+
+      const toggles = screen.getAllByRole('button', { name: /Show route on map/ });
+      expect(toggles).toHaveLength(2);
+      await user.press(toggles[0]);
+
+      expect(screen.getByText('1. A1 → 2. A2')).toBeVisible();
+      // B1 is listed as a stop of its own day, but is not part of this route.
+      expect(screen.queryByText(/\d\. B1/)).toBeNull();
+    });
+  });
 });

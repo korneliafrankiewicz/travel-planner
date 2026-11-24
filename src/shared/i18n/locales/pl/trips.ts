@@ -52,6 +52,10 @@ export const trips: Translations<typeof en> = {
     message: '„{{title}}” i wszystkie jej dane zostaną usunięte. Tej operacji nie można cofnąć.',
     confirm: 'Usuń',
   },
+  distance: {
+    meters: '{{value}} m',
+    kilometers: '{{value}} km',
+  },
   itinerary: {
     title: 'Plan podróży',
     day: 'Dzień {{number}}',
@@ -59,8 +63,18 @@ export const trips: Translations<typeof en> = {
     addStop: 'Dodaj punkt',
     empty: 'Nie zaplanowano jeszcze żadnych punktów',
     overlap: 'Nakłada się na inny punkt',
+    route: {
+      show: 'Pokaż trasę na mapie',
+      hide: 'Ukryj trasę',
+      summary: '{{stops}} · {{distance}}',
+      mapLabel: 'Mapa trasy z danego dnia',
+      leg: '{{fromOrder}}. {{from}} → {{toOrder}}. {{to}}',
+      legAccessible: 'Z punktu {{from}} do punktu {{to}}, {{distance}}',
+      straightLine: 'Odległości są liczone w linii prostej między punktami, a nie jako długość trasy pieszej lub samochodowej.',
+    },
   },
   stop: {
+    locationPreview: 'Mapa pokazująca, gdzie jest ten punkt',
     newTitle: 'Nowy punkt',
     editTitle: 'Edytuj punkt',
     save: 'Zapisz punkt',

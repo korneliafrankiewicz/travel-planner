@@ -19,6 +19,7 @@ import { FormField } from '../NewTrip/components/FormField';
 import type { Coordinates, StopType } from '../TripList/schema/stopSchema';
 import { DayChips } from './components/DayChips';
 import { LocationPicker } from './components/LocationPicker';
+import { StopLocationPreview } from './components/StopLocationPreview';
 import type { StopFormState } from './hooks/useStopForm';
 import { formatCoordinate, getFormCoordinates } from './utils/pickedLocation';
 import { formatTimeInput } from './utils/timeInput';
@@ -171,6 +172,9 @@ export const StopForm = ({
             <Text style={[styles.hint, { color: colors.textSecondary }]}>
               {t('stop.fields.location.hint')}
             </Text>
+            {canPickLocation && currentLocation !== null && (
+              <StopLocationPreview coordinates={currentLocation} />
+            )}
             {canPickLocation && (
               <PillButton
                 variant="secondary"

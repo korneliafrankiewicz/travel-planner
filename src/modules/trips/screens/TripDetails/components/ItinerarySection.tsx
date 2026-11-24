@@ -10,6 +10,7 @@ import { useStopsStore } from '../../TripList/store/stopsStore';
 import type { Trip } from '../../TripList/store/tripsStore';
 import { parseLocalDate, toIsoDate } from '../../TripList/utils/tripDates';
 import { buildItinerary, findOverlappingStopIds } from '../utils/itinerary';
+import { DayRoute } from './DayRoute';
 import { StopCard } from './StopCard';
 
 const ADD_BUTTON_SIZE = 36;
@@ -105,6 +106,8 @@ export const ItinerarySection = ({ trip }: ItinerarySectionProps) => {
                 </Fragment>
               ))
             )}
+
+            <DayRoute stops={day.stops} />
           </View>
         );
       })}
