@@ -101,6 +101,10 @@ export const trips = {
         label: 'Duration (minutes)',
         placeholder: '60',
       },
+      search: {
+        label: 'Search for a place',
+        placeholder: 'e.g. Belém Tower, Lisbon',
+      },
       location: {
         label: 'Location',
         hint: 'Optional. Choose a place on the map, or enter both coordinates.',
@@ -120,6 +124,12 @@ export const trips = {
         label: 'Link',
         placeholder: 'https://…',
       },
+    },
+    search: {
+      searching: 'Searching…',
+      noResults: 'No places found. Try another name.',
+      error: 'Place search is unavailable right now. Check your connection.',
+      attribution: 'Search results © OpenStreetMap contributors',
     },
     locationPicker: {
       title: 'Choose location',

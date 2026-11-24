@@ -103,4 +103,84 @@ describe('LocationPicker', () => {
     expect(screen.getByRole('header', { name: 'Wybierz lokalizację' })).toBeVisible();
     expect(screen.getByText('Dotknij mapy, aby umieścić pinezkę')).toBeVisible();
   });
+
+  describe('search for a place', () => {
+    const SEARCH = 'Search for a place';
+    const belem = {
+      type: 'Feature',
+      properties: { osm_type: 'W', osm_id: 24341353, name: 'Tower of Belém', city: 'Lisbon' },
+      geometry: { type: 'Point', coordinates: [-9.2159288, 38.691586] },
+    };
+
+    const answerWith = (features: unknown[]) =>
+      jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: async () => ({ features }),
+      } as Response);
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('has a search field over the map, without a visible label', async () => {
+      await renderPicker().ready;
+
+      expect(screen.getByLabelText(SEARCH)).toBeVisible();
+      expect(screen.queryByText(SEARCH)).toBeNull();
+      expect(screen.queryByText('Optional')).toBeNull();
+    });
+
+    it('puts the pin on the place that is chosen, ready to be confirmed', async () => {
+      answerWith([belem]);
+      const user = userEvent.setup();
+      const { onConfirm, ready } = renderPicker();
+      await ready;
+
+      await user.type(screen.getByLabelText(SEARCH), 'Belem Tower');
+      await user.press(await screen.findByRole('button', { name: 'Tower of Belém, Lisbon' }));
+
+      expect(screen.getByRole('button', { name: 'pin at 38.691586, -9.215929' })).toBeVisible();
+      expect(screen.getByLabelText(SEARCH)).toHaveDisplayValue('');
+
+      await user.press(screen.getByRole('button', { name: 'Use this location' }));
+      expect(onConfirm).toHaveBeenCalledWith({ latitude: 38.691586, longitude: -9.215929 });
+    });
+
+    it('moves a pin that was already placed', async () => {
+      answerWith([belem]);
+      const user = userEvent.setup();
+      await renderPicker({ initialCoordinates: { latitude: 49.2992, longitude: 19.9496 } }).ready;
+
+      await user.type(screen.getByLabelText(SEARCH), 'Belem');
+      await user.press(await screen.findByRole('button', { name: 'Tower of Belém, Lisbon' }));
+
+      expect(screen.getAllByTestId('map-pin')).toHaveLength(1);
+      expect(screen.getByRole('button', { name: 'pin at 38.691586, -9.215929' })).toBeVisible();
+    });
+
+    it('says so when nothing is found, without pointing at fields that are not on this screen', async () => {
+      answerWith([]);
+      const user = userEvent.setup();
+      await renderPicker().ready;
+
+      await user.type(screen.getByLabelText(SEARCH), 'qqqqqqq');
+
+      expect(await screen.findByText('No places found. Try another name.')).toBeVisible();
+    });
+
+    it('can still be used by tapping the map when the search is unavailable', async () => {
+      jest.spyOn(globalThis, 'fetch').mockRejectedValue(new TypeError('Network request failed'));
+      const user = userEvent.setup();
+      const { onConfirm, ready } = renderPicker();
+      await ready;
+
+      await user.type(screen.getByLabelText(SEARCH), 'Belem');
+      expect(await screen.findByText(/Place search is unavailable right now/)).toBeVisible();
+
+      await tap(38.7, -9.1);
+      await user.press(screen.getByRole('button', { name: 'Use this location' }));
+      expect(onConfirm).toHaveBeenCalledWith({ latitude: 38.7, longitude: -9.1 });
+    });
+  });
 });

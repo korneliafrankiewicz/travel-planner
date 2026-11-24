@@ -109,6 +109,10 @@ export const trips: Translations<typeof en> = {
         label: 'Czas trwania (minuty)',
         placeholder: '60',
       },
+      search: {
+        label: 'Wyszukaj miejsce',
+        placeholder: 'np. Wieża Belém, Lizbona',
+      },
       location: {
         label: 'Lokalizacja',
         hint: 'Opcjonalne. Wybierz miejsce na mapie lub podaj obie współrzędne.',
@@ -128,6 +132,12 @@ export const trips: Translations<typeof en> = {
         label: 'Link',
         placeholder: 'https://…',
       },
+    },
+    search: {
+      searching: 'Szukam…',
+      noResults: 'Nie znaleziono miejsc. Spróbuj innej nazwy.',
+      error: 'Wyszukiwanie miejsc jest teraz niedostępne. Sprawdź połączenie.',
+      attribution: 'Wyniki wyszukiwania © współtwórcy OpenStreetMap',
     },
     locationPicker: {
       title: 'Wybierz lokalizację',

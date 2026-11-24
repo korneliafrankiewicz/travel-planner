@@ -11,6 +11,9 @@ type FormFieldProps = {
   placeholder?: string;
   error?: string;
   optional?: boolean;
+  // Leaves out the visible label (it stays as the accessibility label), for fields that sit in
+  // a layout of their own, such as a search box over a map.
+  hideLabel?: boolean;
   multiline?: boolean;
   autoCapitalize?: TextInputProps['autoCapitalize'];
   autoCorrect?: boolean;
@@ -25,6 +28,7 @@ export const FormField = ({
   placeholder,
   error,
   optional = false,
+  hideLabel = false,
   multiline = false,
   autoCapitalize = 'sentences',
   autoCorrect,
@@ -39,14 +43,16 @@ export const FormField = ({
 
   return (
     <View style={styles.field}>
-      <View style={styles.labelRow}>
-        <Text style={[styles.label, { color: colors.textPrimary }]}>{label}</Text>
-        {optional && (
-          <Text style={[styles.optional, { color: colors.textSecondary }]}>
-            {t('form.optional')}
-          </Text>
-        )}
-      </View>
+      {!hideLabel && (
+        <View style={styles.labelRow}>
+          <Text style={[styles.label, { color: colors.textPrimary }]}>{label}</Text>
+          {optional && (
+            <Text style={[styles.optional, { color: colors.textSecondary }]}>
+              {t('form.optional')}
+            </Text>
+          )}
+        </View>
+      )}
       <TextInput
         accessibilityLabel={label}
         value={value}

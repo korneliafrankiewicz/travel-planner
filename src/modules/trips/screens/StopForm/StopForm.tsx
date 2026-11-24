@@ -16,11 +16,15 @@ import { PillButton } from '@/shared/ui/PillButton';
 import { SegmentedControl, type SegmentedOption } from '@/shared/ui/SegmentedControl';
 
 import { FormField } from '../NewTrip/components/FormField';
+import type { PlaceResult } from '@/shared/geocoding/searchPlaces';
+
 import type { Coordinates, StopType } from '../TripList/schema/stopSchema';
 import { DayChips } from './components/DayChips';
 import { LocationPicker } from './components/LocationPicker';
+import { PlaceSearch } from './components/PlaceSearch';
 import { StopLocationPreview } from './components/StopLocationPreview';
 import type { StopFormState } from './hooks/useStopForm';
+import { getRegionForCoordinates } from '../TripDetails/utils/mapMarkers';
 import { formatCoordinate, getFormCoordinates } from './utils/pickedLocation';
 import { formatTimeInput } from './utils/timeInput';
 
@@ -53,10 +57,25 @@ export const StopForm = ({
   const currentLocation = getFormCoordinates(values);
   const hasLocationText = values.latitude !== '' || values.longitude !== '';
 
-  const handleLocationPicked = ({ latitude, longitude }: Coordinates) => {
+  // Searched places are ranked by how close they are to the stop, or else to the trip.
+  const searchNear = currentLocation ?? getRegionForCoordinates(tripPlaces);
+
+  const applyLocation = ({ latitude, longitude }: Coordinates) => {
     setField('latitude', formatCoordinate(latitude));
     setField('longitude', formatCoordinate(longitude));
+  };
+
+  const handleLocationPicked = (coordinates: Coordinates) => {
+    applyLocation(coordinates);
     setPickingLocation(false);
+  };
+
+  const handlePlaceFound = (place: PlaceResult) => {
+    applyLocation(place.coordinates);
+    // A stop still without a title is named after the place that was found.
+    if (values.title.trim() === '') {
+      setField('title', place.name);
+    }
   };
 
   const handleLocationClear = () => {
@@ -172,6 +191,7 @@ export const StopForm = ({
             <Text style={[styles.hint, { color: colors.textSecondary }]}>
               {t('stop.fields.location.hint')}
             </Text>
+            <PlaceSearch near={searchNear} onSelect={handlePlaceFound} />
             {canPickLocation && currentLocation !== null && (
               <StopLocationPreview coordinates={currentLocation} />
             )}
