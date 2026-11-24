@@ -10,6 +10,10 @@ A mobile app to plan trips day by day, with a map and travel time between stops.
 - Zustand (client state)
 - expo-secure-store (tokens only)
 
+## Documentation
+
+See [`docs/`](docs/README.md): getting started, architecture, conventions, maps and place search, testing and troubleshooting.
+
 ## Getting started
 
 ```bash

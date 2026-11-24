@@ -1,6 +1,6 @@
 # travel-planner
 
-Expo / React Native app. See `AGENTS.md` for Expo-specific instructions. Full documentation will live in `docs/`.
+Expo / React Native app. See `AGENTS.md` for Expo-specific instructions. Documentation lives in `docs/` (start at `docs/README.md`); keep it up to date when behavior, setup or conventions change.
 
 ## Rules
 
