@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -15,24 +16,52 @@ import { PillButton } from '@/shared/ui/PillButton';
 import { SegmentedControl, type SegmentedOption } from '@/shared/ui/SegmentedControl';
 
 import { FormField } from '../NewTrip/components/FormField';
-import type { StopType } from '../TripList/schema/stopSchema';
+import type { Coordinates, StopType } from '../TripList/schema/stopSchema';
 import { DayChips } from './components/DayChips';
+import { LocationPicker } from './components/LocationPicker';
 import type { StopFormState } from './hooks/useStopForm';
+import { formatCoordinate, getFormCoordinates } from './utils/pickedLocation';
 import { formatTimeInput } from './utils/timeInput';
 
 type StopFormProps = {
   title: string;
   submitLabel: string;
   form: StopFormState;
+  // Places of the trip's other stops. The location picker opens near them when this stop has
+  // no place yet.
+  tripPlaces?: Coordinates[];
   // When provided, a delete button is shown (used when editing an existing stop).
   onDeleteRequest?: () => void;
 };
 
 // Full-screen form used by both the "new stop" and the "edit stop" screens.
-export const StopForm = ({ title, submitLabel, form, onDeleteRequest }: StopFormProps) => {
+export const StopForm = ({
+  title,
+  submitLabel,
+  form,
+  tripPlaces = [],
+  onDeleteRequest,
+}: StopFormProps) => {
   const { t, i18n } = useTranslation('trips');
   const { colors } = useTheme();
   const { values, errors, days, setField, submit, close } = form;
+  const [pickingLocation, setPickingLocation] = useState(false);
+
+  // react-native-maps has no web support, so there the coordinates are only typed in.
+  const canPickLocation = Platform.OS !== 'web';
+  const currentLocation = getFormCoordinates(values);
+  const hasLocationText = values.latitude !== '' || values.longitude !== '';
+
+  const handleLocationPicked = ({ latitude, longitude }: Coordinates) => {
+    setField('latitude', formatCoordinate(latitude));
+    setField('longitude', formatCoordinate(longitude));
+    setPickingLocation(false);
+  };
+
+  const handleLocationClear = () => {
+    setField('latitude', '');
+    setField('longitude', '');
+  };
 
   const typeOptions: SegmentedOption<StopType>[] = [
     { value: 'lodging', label: t('stop.types.lodging') },
@@ -142,6 +171,17 @@ export const StopForm = ({ title, submitLabel, form, onDeleteRequest }: StopForm
             <Text style={[styles.hint, { color: colors.textSecondary }]}>
               {t('stop.fields.location.hint')}
             </Text>
+            {canPickLocation && (
+              <PillButton
+                variant="secondary"
+                label={
+                  currentLocation !== null
+                    ? t('stop.fields.location.change')
+                    : t('stop.fields.location.choose')
+                }
+                onPress={() => setPickingLocation(true)}
+              />
+            )}
             <View style={styles.row}>
               <View style={styles.rowItem}>
                 <FormField
@@ -168,6 +208,18 @@ export const StopForm = ({ title, submitLabel, form, onDeleteRequest }: StopForm
                 />
               </View>
             </View>
+            {hasLocationText && (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('stop.fields.location.clear')}
+                hitSlop={spacing.md}
+                onPress={handleLocationClear}
+                style={styles.clear}>
+                <Text style={[styles.clearLabel, { color: colors.accent }]}>
+                  {t('stop.fields.location.clear')}
+                </Text>
+              </Pressable>
+            )}
           </View>
           <FormField
             label={t('stop.fields.url.label')}
@@ -200,6 +252,14 @@ export const StopForm = ({ title, submitLabel, form, onDeleteRequest }: StopForm
           <PillButton label={submitLabel} onPress={submit} />
         </View>
       </KeyboardAvoidingView>
+
+      <LocationPicker
+        visible={pickingLocation}
+        initialCoordinates={currentLocation}
+        tripPlaces={tripPlaces}
+        onConfirm={handleLocationPicked}
+        onCancel={() => setPickingLocation(false)}
+      />
     </SafeAreaView>
   );
 };
@@ -243,6 +303,12 @@ const styles = StyleSheet.create({
   },
   hint: {
     ...typography.small,
+  },
+  clear: {
+    alignSelf: 'flex-start',
+  },
+  clearLabel: {
+    ...typography.smallSemibold,
   },
   row: {
     flexDirection: 'row',

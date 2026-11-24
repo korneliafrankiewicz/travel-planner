@@ -10,17 +10,23 @@ jest.mock('expo-localization', () => ({
   getLocales: () => [{ languageCode: 'en' }],
 }));
 
-// The map is a native view. In tests it is a plain view, and every marker is a button that
+// The map is a native view. In tests it is a plain view; tests tap it with
+// `fireEvent(map, 'press', { nativeEvent: { coordinate } })`. Every marker is a button that
 // calls `onCalloutPress`, so tests can check which pins are shown and what a tap does.
+// A marker without a title (the location picker's pin) is found by its test id.
 jest.mock('react-native-maps', () => {
   const { createElement } = require('react');
   const { Pressable, View } = require('react-native');
   const MapView = ({ children, accessibilityLabel }) =>
     createElement(View, { testID: 'map-view', accessibilityLabel }, children);
-  const Marker = ({ title, description, onCalloutPress }) =>
+  const Marker = ({ title, description, coordinate, onCalloutPress }) =>
     createElement(Pressable, {
+      testID: 'map-pin',
       accessibilityRole: 'button',
-      accessibilityLabel: `pin: ${title}, ${description}`,
+      accessibilityLabel:
+        title !== undefined
+          ? `pin: ${title}, ${description}`
+          : `pin at ${coordinate.latitude}, ${coordinate.longitude}`,
       onPress: onCalloutPress,
     });
   return { __esModule: true, default: MapView, Marker };

@@ -40,14 +40,14 @@ export const getStopMarkers = (trip: DateRange, stops: Stop[]): StopMarker[] => 
     );
 };
 
-// The map area that shows all the markers with some room around them. Returns null when
+// The map area that shows all the points with some room around them. Returns null when
 // there is nothing to show.
-export const getMapRegion = (markers: StopMarker[]): MapRegion | null => {
-  if (markers.length === 0) {
+export const getRegionForCoordinates = (points: Coordinates[]): MapRegion | null => {
+  if (points.length === 0) {
     return null;
   }
-  const latitudes = markers.map((marker) => marker.coordinates.latitude);
-  const longitudes = markers.map((marker) => marker.coordinates.longitude);
+  const latitudes = points.map((point) => point.latitude);
+  const longitudes = points.map((point) => point.longitude);
   const minLatitude = Math.min(...latitudes);
   const maxLatitude = Math.max(...latitudes);
   const minLongitude = Math.min(...longitudes);
@@ -60,3 +60,7 @@ export const getMapRegion = (markers: StopMarker[]): MapRegion | null => {
     longitudeDelta: Math.max((maxLongitude - minLongitude) * PADDING_FACTOR, MIN_DELTA),
   };
 };
+
+// The map area that shows all the markers. Returns null when there are none.
+export const getMapRegion = (markers: StopMarker[]): MapRegion | null =>
+  getRegionForCoordinates(markers.map((marker) => marker.coordinates));

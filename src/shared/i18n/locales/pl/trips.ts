@@ -97,7 +97,10 @@ export const trips: Translations<typeof en> = {
       },
       location: {
         label: 'Lokalizacja',
-        hint: 'Opcjonalne. Podaj obie współrzędne, aby pokazać ten punkt na mapie.',
+        hint: 'Opcjonalne. Wybierz miejsce na mapie lub podaj obie współrzędne.',
+        choose: 'Wybierz na mapie',
+        change: 'Zmień na mapie',
+        clear: 'Usuń lokalizację',
       },
       latitude: {
         label: 'Szerokość geograficzna',
@@ -111,6 +114,13 @@ export const trips: Translations<typeof en> = {
         label: 'Link',
         placeholder: 'https://…',
       },
+    },
+    locationPicker: {
+      title: 'Wybierz lokalizację',
+      hint: 'Dotknij mapy, aby umieścić pinezkę',
+      hintPlaced: 'Przeciągnij pinezkę lub dotknij innego miejsca, aby ją przenieść',
+      confirm: 'Użyj tej lokalizacji',
+      mapLabel: 'Mapa do wyboru lokalizacji',
     },
     deleteConfirm: {
       title: 'Usunąć ten punkt?',

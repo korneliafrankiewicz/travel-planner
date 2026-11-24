@@ -89,7 +89,10 @@ export const trips = {
       },
       location: {
         label: 'Location',
-        hint: 'Optional. Enter both coordinates to show this stop on the map.',
+        hint: 'Optional. Choose a place on the map, or enter both coordinates.',
+        choose: 'Choose on map',
+        change: 'Change on map',
+        clear: 'Clear location',
       },
       latitude: {
         label: 'Latitude',
@@ -103,6 +106,13 @@ export const trips = {
         label: 'Link',
         placeholder: 'https://…',
       },
+    },
+    locationPicker: {
+      title: 'Choose location',
+      hint: 'Tap the map to place the pin',
+      hintPlaced: 'Drag the pin or tap elsewhere to move it',
+      confirm: 'Use this location',
+      mapLabel: 'Map for choosing a location',
     },
     deleteConfirm: {
       title: 'Delete this stop?',

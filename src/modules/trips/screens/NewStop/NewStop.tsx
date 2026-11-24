@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { StopForm } from '../StopForm/StopForm';
 import { useStopForm } from '../StopForm/hooks/useStopForm';
+import { useTripPlaces } from '../StopForm/hooks/useTripPlaces';
 import { useStopsStore } from '../TripList/store/stopsStore';
 import { useTripsStore, type Trip } from '../TripList/store/tripsStore';
 import { getTripDays, toIsoDate } from '../TripList/utils/tripDates';
@@ -19,6 +20,7 @@ type NewStopFormProps = {
 const NewStopForm = ({ trip, date }: NewStopFormProps) => {
   const { t } = useTranslation('trips');
   const addStop = useStopsStore((state) => state.addStop);
+  const tripPlaces = useTripPlaces(trip.id);
 
   const form = useStopForm({
     trip,
@@ -37,7 +39,14 @@ const NewStopForm = ({ trip, date }: NewStopFormProps) => {
     onSave: (input) => addStop(trip.id, input),
   });
 
-  return <StopForm title={t('stop.newTitle')} submitLabel={t('stop.save')} form={form} />;
+  return (
+    <StopForm
+      title={t('stop.newTitle')}
+      submitLabel={t('stop.save')}
+      form={form}
+      tripPlaces={tripPlaces}
+    />
+  );
 };
 
 const NewStop = () => {

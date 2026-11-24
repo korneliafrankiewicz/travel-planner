@@ -6,6 +6,7 @@ import { ConfirmDialog } from '@/shared/ui/ConfirmDialog';
 
 import { StopForm } from '../StopForm/StopForm';
 import { useStopForm } from '../StopForm/hooks/useStopForm';
+import { useTripPlaces } from '../StopForm/hooks/useTripPlaces';
 import type { Stop } from '../TripList/schema/stopSchema';
 import { useStopsStore } from '../TripList/store/stopsStore';
 import { useTripsStore, type Trip } from '../TripList/store/tripsStore';
@@ -20,6 +21,7 @@ const EditStopForm = ({ trip, stop }: EditStopFormProps) => {
   const updateStop = useStopsStore((state) => state.updateStop);
   const deleteStop = useStopsStore((state) => state.deleteStop);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const tripPlaces = useTripPlaces(trip.id, stop.id);
 
   const form = useStopForm({
     trip,
@@ -51,6 +53,7 @@ const EditStopForm = ({ trip, stop }: EditStopFormProps) => {
         title={t('stop.editTitle')}
         submitLabel={t('form.saveChanges')}
         form={form}
+        tripPlaces={tripPlaces}
         onDeleteRequest={() => setConfirmingDelete(true)}
       />
       <ConfirmDialog
