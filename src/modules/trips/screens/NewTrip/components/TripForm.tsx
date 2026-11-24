@@ -11,11 +11,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { maxContentWidth, spacing, typography, useTheme } from '@/shared/theme';
+import { FormField } from '@/shared/ui/FormField';
 import { PillButton } from '@/shared/ui/PillButton';
 
 import type { TripFormState } from '../hooks/useTripForm';
 import { DateRangeField } from './DateRangeField';
-import { FormField } from './FormField';
 
 type TripFormProps = {
   title: string;

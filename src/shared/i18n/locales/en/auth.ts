@@ -1,0 +1,77 @@
+export const auth = {
+  checkingSession: 'Checking your session…',
+  welcome: {
+    title: 'Plan trips, day by day',
+    subtitle: 'Maps, routes and places for every stop, all in one place.',
+    logIn: 'Log in',
+    createAccount: 'Create account',
+  },
+  logIn: {
+    title: 'Welcome back',
+    subtitle: 'Log in to continue planning your trips.',
+    submit: 'Log in',
+    submitting: 'Logging in…',
+    forgotPassword: 'Forgot password?',
+    noAccount: 'No account yet?',
+    createOne: 'Create one',
+  },
+  signUp: {
+    title: 'Create your account',
+    subtitle: 'It only takes a minute.',
+    submit: 'Create account',
+    submitting: 'Creating your account…',
+    haveAccount: 'Already have an account?',
+    logIn: 'Log in',
+    terms: 'I accept the Terms of Use and the Privacy Policy',
+  },
+  forgotPassword: {
+    title: 'Reset your password',
+    subtitle: "Enter your email and we'll send you a link to reset it.",
+    submit: 'Send reset link',
+    submitting: 'Sending…',
+    sentTitle: 'Check your email',
+    sentMessage: 'If an account exists for {{email}}, we have sent a link to reset the password.',
+    backToLogIn: 'Back to log in',
+  },
+  fields: {
+    name: {
+      label: 'Name',
+      placeholder: 'Your name',
+    },
+    email: {
+      label: 'Email',
+      placeholder: 'you@example.com',
+    },
+    password: {
+      label: 'Password',
+      show: 'Show password',
+      hide: 'Hide password',
+    },
+    confirmPassword: {
+      label: 'Confirm password',
+    },
+  },
+  strength: {
+    label: 'Password strength',
+    weak: 'Weak',
+    fair: 'Fair',
+    strong: 'Strong',
+    hint: 'Use at least 8 characters, with letters and numbers.',
+  },
+  errors: {
+    nameRequired: 'Enter your name',
+    emailRequired: 'Enter your email address',
+    emailInvalid: 'Enter a valid email address',
+    passwordRequired: 'Enter your password',
+    passwordTooShort: 'Use at least 8 characters',
+    passwordTooWeak: 'Use both letters and numbers',
+    passwordsDoNotMatch: 'The passwords do not match',
+    termsRequired: 'Accept the terms to create an account',
+  },
+  formErrors: {
+    invalidCredentials: 'Wrong email or password',
+    emailTaken: 'An account with this email already exists',
+    network: 'Could not reach the server. Check your connection and try again.',
+    unknown: 'Something went wrong. Please try again.',
+  },
+} as const;

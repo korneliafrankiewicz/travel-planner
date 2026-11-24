@@ -1,7 +1,9 @@
+import { auth as authEn } from './locales/en/auth';
 import { common as commonEn } from './locales/en/common';
 import { profile as profileEn } from './locales/en/profile';
 import { settings as settingsEn } from './locales/en/settings';
 import { trips as tripsEn } from './locales/en/trips';
+import { auth as authPl } from './locales/pl/auth';
 import { common as commonPl } from './locales/pl/common';
 import { profile as profilePl } from './locales/pl/profile';
 import { settings as settingsPl } from './locales/pl/settings';
@@ -9,6 +11,7 @@ import { trips as tripsPl } from './locales/pl/trips';
 
 const namespaces = {
   common: { en: commonEn, pl: commonPl },
+  auth: { en: authEn, pl: authPl },
   profile: { en: profileEn, pl: profilePl },
   settings: { en: settingsEn, pl: settingsPl },
   trips: { en: tripsEn, pl: tripsPl },

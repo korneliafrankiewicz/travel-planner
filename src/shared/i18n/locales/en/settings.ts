@@ -36,6 +36,12 @@ export const settings = {
   account: {
     logOut: {
       title: 'Log out',
+      confirm: {
+        title: 'Log out?',
+        message: 'You will need to log in again to use the app. Your trips stay on this device.',
+        confirm: 'Log out',
+        cancel: 'Cancel',
+      },
     },
     deleteAccount: {
       title: 'Delete account and data',

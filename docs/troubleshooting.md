@@ -43,6 +43,20 @@ language.
 - **Web:** clear the site data for the address that Expo shows (for example
   `localhost:8081`) in the browser's developer tools.
 
+## I cannot get into the app, or I am logged out
+
+- The app now starts on the **Welcome** screen when nobody is logged in. With the stand-in back
+  end any email and password work, for example `anna@example.com` and `Secret123`. See
+  [Authentication](auth.md#the-stand-in-for-the-back-end) for the values that make it fail on
+  purpose.
+- On the **web** you are logged out after every page reload: there is no secure storage there, so
+  the token only lives in memory.
+- **Settings > Account > Log out** needs a confirmation. Your trips stay on the device.
+- If the app seems stuck on "Checking your session…", the service did not answer. A saved user
+  is kept logged in when the service cannot be reached, so this should only be brief.
+- On iOS, after deleting and installing the app again, you may still be logged in: the Keychain
+  survives an uninstall.
+
 ## Place search says it is unavailable
 
 - Check the internet connection of the device.

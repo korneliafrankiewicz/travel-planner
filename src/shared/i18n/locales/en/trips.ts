@@ -160,7 +160,6 @@ export const trips = {
     saveChanges: 'Save changes',
     cancel: 'Cancel',
     save: 'Save trip',
-    optional: 'Optional',
     fields: {
       title: {
         label: 'Trip title',

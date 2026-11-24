@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { useProfileStore } from '@/modules/profile/screens/Profile/store/profileStore';
+import { useProfileIdentity } from '@/modules/profile/screens/Profile/hooks/useProfileIdentity';
 import { getInitials } from '@/modules/profile/screens/Profile/utils/getInitials';
 import { typography, useTheme } from '@/shared/theme';
 import { Avatar } from '@/shared/ui/Avatar';
@@ -11,7 +11,7 @@ export const Header = () => {
   const { t } = useTranslation('trips');
   const { colors } = useTheme();
   const router = useRouter();
-  const displayName = useProfileStore((state) => state.displayName);
+  const { displayName } = useProfileIdentity();
 
   return (
     <View style={styles.header}>

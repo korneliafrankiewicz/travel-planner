@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { AppLanguage } from '@/shared/i18n';
 import { maxContentWidth, spacing, typography, useTheme, webTabBarInset, type ThemeScheme } from '@/shared/theme';
+import { useSessionStore } from '@/shared/auth/sessionStore';
 import { resetSampleData } from '@/modules/trips/screens/TripList/store/resetSampleData';
 import { ConfirmDialog } from '@/shared/ui/ConfirmDialog';
 import type { SegmentedOption } from '@/shared/ui/SegmentedControl';
@@ -22,6 +23,8 @@ const Settings = () => {
   const language = useSettingsStore((state) => state.language);
   const setTheme = useSettingsStore((state) => state.setTheme);
   const setLanguage = useSettingsStore((state) => state.setLanguage);
+  const signOut = useSessionStore((state) => state.signOut);
+  const [confirmingLogOut, setConfirmingLogOut] = useState(false);
   const [confirmingReset, setConfirmingReset] = useState(false);
   const [resetDone, setResetDone] = useState(false);
 
@@ -91,7 +94,7 @@ const Settings = () => {
         </SettingsSection>
 
         <SettingsSection title={t('sections.account')}>
-          <SettingsRow title={t('account.logOut.title')} hint={t('comingSoon')} disabled />
+          <SettingsRow title={t('account.logOut.title')} onPress={() => setConfirmingLogOut(true)} />
           <SettingsRow
             title={t('account.deleteAccount.title')}
             hint={t('comingSoon')}
@@ -114,6 +117,19 @@ const Settings = () => {
           </SettingsSection>
         )}
       </ScrollView>
+
+      <ConfirmDialog
+        visible={confirmingLogOut}
+        title={t('account.logOut.confirm.title')}
+        message={t('account.logOut.confirm.message')}
+        confirmLabel={t('account.logOut.confirm.confirm')}
+        cancelLabel={t('account.logOut.confirm.cancel')}
+        onConfirm={() => {
+          setConfirmingLogOut(false);
+          void signOut();
+        }}
+        onCancel={() => setConfirmingLogOut(false)}
+      />
 
       <ConfirmDialog
         visible={confirmingReset}

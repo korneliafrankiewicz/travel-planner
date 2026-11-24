@@ -8,8 +8,8 @@ import { Avatar } from '@/shared/ui/Avatar';
 import { IconButton } from '@/shared/ui/IconButton';
 
 import { StatTile } from './components/StatTile';
+import { useProfileIdentity } from './hooks/useProfileIdentity';
 import { useTripStats } from './hooks/useTripStats';
-import { useProfileStore } from './store/profileStore';
 import { getInitials } from './utils/getInitials';
 
 const AVATAR_SIZE = 96;
@@ -19,8 +19,7 @@ const Profile = () => {
   const { t: tCommon } = useTranslation('common');
   const { colors } = useTheme();
   const router = useRouter();
-  const displayName = useProfileStore((state) => state.displayName);
-  const email = useProfileStore((state) => state.email);
+  const { displayName, email } = useProfileIdentity();
   const stats = useTripStats();
 
   const goBack = () => {

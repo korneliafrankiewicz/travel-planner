@@ -8,7 +8,7 @@ A mobile app to plan trips day by day, with a map and travel time between stops.
 - TypeScript
 - Expo Router (file-based navigation)
 - Zustand (client state)
-- expo-secure-store (tokens only)
+- expo-secure-store (the login token only)
 
 ## Documentation
 

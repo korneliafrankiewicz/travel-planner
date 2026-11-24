@@ -12,10 +12,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { maxContentWidth, radius, spacing, typography, useTheme } from '@/shared/theme';
+import { FormField } from '@/shared/ui/FormField';
 import { PillButton } from '@/shared/ui/PillButton';
 import { SegmentedControl, type SegmentedOption } from '@/shared/ui/SegmentedControl';
 
-import { FormField } from '../NewTrip/components/FormField';
 import type { PlaceResult } from '@/shared/geocoding/searchPlaces';
 
 import type { Coordinates, StopType } from '../TripList/schema/stopSchema';

@@ -1,5 +1,6 @@
 import { screen, userEvent } from '@testing-library/react-native';
 
+import { useSessionStore } from '@/shared/auth/sessionStore';
 import { useStopsStore } from '@/modules/trips/screens/TripList/store/stopsStore';
 import { useTripsStore } from '@/modules/trips/screens/TripList/store/tripsStore';
 import { i18n } from '@/shared/i18n';
@@ -14,7 +15,17 @@ jest.mock('expo-router', () => ({
   useRouter: () => ({ push: mockPush }),
 }));
 
+// A stand-in for logging out, so the tests do not depend on the auth service. Every test starts
+// with it in place again.
+const signOut = jest.fn(async () => {});
+
 beforeEach(async () => {
+  signOut.mockClear();
+  useSessionStore.setState({
+    status: 'signedIn',
+    user: { id: 'u1', name: 'Anna Nowak', email: 'anna.nowak@example.com' },
+    signOut,
+  });
   useSettingsStore.setState({ theme: 'light', language: 'en' });
   await i18n.changeLanguage('en');
   mockPush.mockClear();
@@ -81,17 +92,17 @@ describe('Settings screen', () => {
   });
 
   describe('profile card', () => {
-    it('shows the name and email', async () => {
+    it('shows the name and email of the person who is logged in', async () => {
       await renderWithProviders(<Settings />);
-      expect(screen.getByText('Alex Traveler')).toBeVisible();
-      expect(screen.getByText('alex.traveler@example.com')).toBeVisible();
+      expect(screen.getByText('Anna Nowak')).toBeVisible();
+      expect(screen.getByText('anna.nowak@example.com')).toBeVisible();
     });
 
     it('opens the Profile screen when pressed', async () => {
       const user = userEvent.setup();
       await renderWithProviders(<Settings />);
 
-      await user.press(screen.getByRole('button', { name: 'Profile: Alex Traveler' }));
+      await user.press(screen.getByRole('button', { name: 'Profile: Anna Nowak' }));
 
       expect(mockPush).toHaveBeenCalledWith('/profile');
     });
@@ -101,7 +112,6 @@ describe('Settings screen', () => {
     it.each([
       'Change PIN',
       'Lock after',
-      'Log out',
       'Delete account and data',
     ])('"%s" is shown but disabled until the feature exists', async (name) => {
       await renderWithProviders(<Settings />);
@@ -223,7 +233,60 @@ describe('developer section', () => {
     await renderWithProviders(<Settings />);
 
     expect(screen.getByRole('button', { name: 'Change PIN' })).toBeDisabled();
-    expect(screen.getByRole('button', { name: 'Log out' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Delete account and data' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Reset sample data' })).toBeEnabled();
+  });
+});
+
+describe('log out', () => {
+  it('is a row that can be used', async () => {
+    await renderWithProviders(<Settings />);
+    expect(screen.getByRole('button', { name: 'Log out' })).toBeEnabled();
+  });
+
+  it('asks for confirmation first and does not log out yet', async () => {
+    const user = userEvent.setup();
+    await renderWithProviders(<Settings />);
+
+    await user.press(screen.getByRole('button', { name: 'Log out' }));
+
+    expect(screen.getByRole('header', { name: 'Log out?' })).toBeVisible();
+    expect(screen.getByText(/Your trips stay on this device/)).toBeVisible();
+    expect(signOut).not.toHaveBeenCalled();
+  });
+
+  it('keeps the user logged in when cancelled', async () => {
+    const user = userEvent.setup();
+    await renderWithProviders(<Settings />);
+
+    await user.press(screen.getByRole('button', { name: 'Log out' }));
+    await user.press(screen.getByRole('button', { name: 'Cancel' }));
+
+    expect(signOut).not.toHaveBeenCalled();
+    expect(screen.queryByText('Log out?')).toBeNull();
+  });
+
+  it('logs out when confirmed', async () => {
+    const user = userEvent.setup();
+    await renderWithProviders(<Settings />);
+
+    await user.press(screen.getByRole('button', { name: 'Log out' }));
+    // The dialog has its own "Log out" button; the row behind it is hidden from the dialog.
+    await user.press(screen.getAllByRole('button', { name: 'Log out' }).at(-1)!);
+
+    expect(signOut).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText('Log out?')).toBeNull();
+  });
+
+  it('is in Polish when the app is', async () => {
+    useSettingsStore.setState({ language: 'pl' });
+    await i18n.changeLanguage('pl');
+    const user = userEvent.setup();
+    await renderWithProviders(<Settings />, { language: 'pl' });
+
+    await user.press(screen.getByRole('button', { name: 'Wyloguj się' }));
+
+    expect(screen.getByRole('header', { name: 'Wylogować się?' })).toBeVisible();
+    expect(screen.getByText(/Twoje podróże zostają na tym urządzeniu/)).toBeVisible();
   });
 });

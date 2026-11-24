@@ -24,6 +24,8 @@ Run one file or folder with `npx jest <path>`, and one test with `-t "part of th
   days.
 - **AsyncStorage** uses the in-memory mock that ships with the package.
 - **`expo-localization`** reports an English device.
+- **`expo-secure-store`** is an in-memory store. Tests can read it with
+  `(require('expo-secure-store') as { __store: Map<string, string> }).__store`.
 - **`react-native-maps`** is replaced by a simple stand-in, because the real map is a native
   view. In tests:
   - the map is a view with `testID="map-view"` and its `accessibilityLabel`;
@@ -47,11 +49,22 @@ Run one file or folder with `npx jest <path>`, and one test with `-t "part of th
   jest.mock('expo-router', () => jest.requireActual('@/test-utils/expoRouterMock').expoRouterModule);
   ```
 
+- `authTestUtils` (`src/test-utils`) is for the auth screens. A test file first mocks the service
+  module (`jest.mock('@/shared/auth/authService', () => ({ authService: { signIn: jest.fn(), ... } }))`,
+  see an existing auth screen test). Then `mockedAuthService` gives the stand-in,
+  `resetAuth()` puts the session back to "logged out", and `deferred()` makes a promise the test
+  settles by hand, to look at the screen while a request is still running.
+
 ## Patterns that matter
 
 - **Everything from React Testing Library 14 is async.** `await render`, `await
   user.press(...)`, and `await fireEvent(...)`. Forgetting an `await` shows up as "overlapping
   act() calls" or as an element that is missing.
+- **Settle every pending request inside `act`** (`await act(async () => request.resolve())`).
+  A promise that is resolved at the end of a test, without waiting for the screen to settle,
+  causes a warning that a state update was not wrapped in `act(...)`.
+- **Press the keyboard's submit key** with `user.type(field, 'text', { submitEditing: true })`;
+  `{enter}` is not understood.
 - **Fix "today".** Screens compare dates with today, so tests pin it:
 
   ```ts

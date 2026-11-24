@@ -168,7 +168,6 @@ export const trips: Translations<typeof en> = {
     saveChanges: 'Zapisz zmiany',
     cancel: 'Anuluj',
     save: 'Zapisz podróż',
-    optional: 'Opcjonalne',
     fields: {
       title: {
         label: 'Nazwa podróży',

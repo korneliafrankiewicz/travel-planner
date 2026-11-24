@@ -38,6 +38,12 @@ export const settings: Translations<typeof en> = {
   account: {
     logOut: {
       title: 'Wyloguj się',
+      confirm: {
+        title: 'Wylogować się?',
+        message: 'Aby korzystać z aplikacji, trzeba będzie zalogować się ponownie. Twoje podróże zostają na tym urządzeniu.',
+        confirm: 'Wyloguj się',
+        cancel: 'Anuluj',
+      },
     },
     deleteAccount: {
       title: 'Usuń konto i dane',

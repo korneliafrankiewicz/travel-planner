@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 
 import type { PlaceCoordinates, PlaceResult } from '@/shared/geocoding/searchPlaces';
 import { radius, spacing, typography, useTheme } from '@/shared/theme';
+import { FormField } from '@/shared/ui/FormField';
 
-import { FormField } from '../../NewTrip/components/FormField';
 import { usePlaceSearch } from '../hooks/usePlaceSearch';
 
 type PlaceSearchProps = {

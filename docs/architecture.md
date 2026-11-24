@@ -6,7 +6,7 @@
   (`app.json`, `experiments.reactCompiler`), so manual memoization (`useMemo`, `useCallback`)
   is rarely needed.
 - **Expo Router** for navigation (file-based, typed routes).
-- **Zustand** for state, saved with **AsyncStorage**.
+- **Zustand** for state, saved with **AsyncStorage**; the login token goes to **SecureStore**.
 - **Zod** to check data read from storage, forms and responses from outside.
 - **i18next** with `react-i18next` for texts, in English and Polish.
 - **Jest** with React Testing Library for tests.
@@ -18,6 +18,7 @@ src/
   app/              Routes. Thin: each file only re-exports a screen.
   components/       The tab bar (app-tabs, with a .web.tsx variant).
   modules/
+    auth/           Welcome, Login, SignUp, ForgotPassword (and components shared by them)
     trips/screens/  TripList, NewTrip, EditTrip, TripDetails, NewStop, EditStop, StopForm
     settings/screens/Settings
     profile/screens/Profile
@@ -25,7 +26,8 @@ src/
     i18n/           Translations (locales/en, locales/pl) and the i18next setup
     theme/          Colors, typography, spacing, ThemeProvider
     store/          Storage helpers shared by the stores
-    ui/             Small components used by several screens
+    ui/             Components used by several screens (buttons, FormField, Spinner, ...)
+    auth/           The session, the token storage and the auth service (see Authentication)
     geocoding/      Place search (the only code that talks to the search service)
   test-utils/       Helpers for tests
 ```
@@ -42,19 +44,26 @@ code is needed by several modules, it moves to `src/shared`.
 
 Every file in `src/app/` is a screen, and each one is a one-line re-export:
 
-| Route | Screen | Opens as |
-| --- | --- | --- |
-| `(tabs)/index` | `TripList` | Home tab |
-| `(tabs)/settings` | `Settings` | Settings tab |
-| `profile` | `Profile` | Pushed screen |
-| `new-trip` | `NewTrip` | Modal |
-| `trip/[id]/index` | `TripDetails` | Pushed screen |
-| `trip/[id]/edit` | `EditTrip` | Modal |
-| `trip/[id]/stops/new` | `NewStop` (accepts a `date` parameter) | Modal |
-| `trip/[id]/stops/[stopId]` | `EditStop` | Modal |
+| Route | Screen | Opens as | Available when |
+| --- | --- | --- | --- |
+| `welcome` | `Welcome` | First screen | logged out |
+| `login` | `Login` | Pushed screen | logged out |
+| `sign-up` | `SignUp` | Pushed screen | logged out |
+| `forgot-password` | `ForgotPassword` | Pushed screen | logged out |
+| `(tabs)/index` | `TripList` | Home tab | logged in |
+| `(tabs)/settings` | `Settings` | Settings tab | logged in |
+| `profile` | `Profile` | Pushed screen | logged in |
+| `new-trip` | `NewTrip` | Modal | logged in |
+| `trip/[id]/index` | `TripDetails` | Pushed screen | logged in |
+| `trip/[id]/edit` | `EditTrip` | Modal | logged in |
+| `trip/[id]/stops/new` | `NewStop` (accepts a `date` parameter) | Modal | logged in |
+| `trip/[id]/stops/[stopId]` | `EditStop` | Modal | logged in |
 
 The root layout (`src/app/_layout.tsx`) keeps the splash screen visible until every saved
-store has been read, so the app never flashes the wrong theme, language or data.
+store has been read, so the app never flashes the wrong theme, language or data. It then shows a
+spinner while the saved session is checked, and it only lets a logged-in user reach the app
+screens and a logged-out user reach the auth screens (`Stack.Protected`). See
+[Authentication](auth.md).
 
 ## Data
 
@@ -92,8 +101,10 @@ of crashing the app. This is also how data changes over time: a new field must b
 have a default in the schema, so entries saved by an older version still load. Stops saved
 before coordinates existed load with `coordinates: null` for that reason.
 
-The profile screen reads a **placeholder** identity from `profileStore`. It is not saved and
-not sent anywhere; it is replaced by the signed-in user's data once authentication exists.
+The profile screen, the profile card in Settings and the avatar in the Trips header show the
+**logged-in user** (`useProfileIdentity`, which reads the session). The session saves the user's
+name and email in app storage (so the app can start offline) and the login token in secure
+storage; a password is never saved. See [Authentication](auth.md#what-is-saved-and-where).
 
 Deleting a trip also deletes its stops (`tripsStore.deleteTrip` calls
 `stopsStore.deleteTripStops`).
