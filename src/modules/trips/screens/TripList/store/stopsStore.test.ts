@@ -20,6 +20,7 @@ const input: StopInput = {
   durationMin: 60,
   notes: '',
   url: '',
+  coordinates: null,
 };
 
 const countFor = (store: Awaited<ReturnType<typeof launch>>, tripId: string) =>
@@ -147,6 +148,7 @@ describe('persistence edge cases', () => {
       durationMin: 30,
       notes: '',
       url: '',
+      coordinates: null,
     };
     await AsyncStorage.setItem(
       'stops',

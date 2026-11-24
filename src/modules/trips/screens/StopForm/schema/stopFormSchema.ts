@@ -3,6 +3,8 @@ import { z } from 'zod';
 import {
   HTTPS_URL_PATTERN,
   MAX_DURATION_MINUTES,
+  MAX_LATITUDE,
+  MAX_LONGITUDE,
   stopTypes,
   TIME_PATTERN,
   type StopInput,
@@ -20,6 +22,9 @@ export type StopFormValues = {
   duration: string;
   notes: string;
   url: string;
+  // Both empty (no place) or both filled in, as decimal degrees.
+  latitude: string;
+  longitude: string;
 };
 
 // Error messages are translation keys (in the `trips` namespace), not user-facing text.
@@ -31,6 +36,8 @@ const TIME_INVALID = 'stop.errors.timeInvalid';
 const DURATION_INVALID = 'stop.errors.durationInvalid';
 const ENDS_AFTER_MIDNIGHT = 'stop.errors.endsAfterMidnight';
 const URL_INVALID = 'stop.errors.urlInvalid';
+const LATITUDE_INVALID = 'stop.errors.latitudeInvalid';
+const LONGITUDE_INVALID = 'stop.errors.longitudeInvalid';
 
 const errorKeys = [
   TITLE_REQUIRED,
@@ -41,18 +48,39 @@ const errorKeys = [
   DURATION_INVALID,
   ENDS_AFTER_MIDNIGHT,
   URL_INVALID,
+  LATITUDE_INVALID,
+  LONGITUDE_INVALID,
 ] as const;
 export type StopErrorKey = (typeof errorKeys)[number];
 
 const isErrorKey = (message: string): message is StopErrorKey =>
   (errorKeys as readonly string[]).includes(message);
 
-const errorFields = ['title', 'date', 'startTime', 'duration', 'url'] as const;
+const errorFields = [
+  'title',
+  'date',
+  'startTime',
+  'duration',
+  'url',
+  'latitude',
+  'longitude',
+] as const;
 type ErrorField = (typeof errorFields)[number];
 export type StopFormErrors = Partial<Record<ErrorField, StopErrorKey>>;
 
 const isErrorField = (field: unknown): field is ErrorField =>
   (errorFields as readonly unknown[]).includes(field);
+
+// Accepts a decimal number with a dot or a comma (the Polish decimal separator), e.g.
+// "38.7223", "-9,1393". Returns null for anything else, including an empty string.
+export const parseCoordinate = (value: string, max: number): number | null => {
+  const text = value.trim().replace(',', '.');
+  if (!/^-?\d{1,3}(\.\d+)?$/.test(text)) {
+    return null;
+  }
+  const number = Number(text);
+  return Math.abs(number) <= max ? number : null;
+};
 
 type StopFormSchemaOptions = {
   // Today as YYYY-MM-DD. Stops can only be planned for today or later.
@@ -88,8 +116,19 @@ export const createStopFormSchema = ({
         .string()
         .trim()
         .refine((value) => value === '' || HTTPS_URL_PATTERN.test(value), { error: URL_INVALID }),
+      latitude: z.string().trim(),
+      longitude: z.string().trim(),
     })
     .superRefine((values, context) => {
+      // Either both coordinates are left empty, or both must be valid.
+      if (values.latitude !== '' || values.longitude !== '') {
+        if (parseCoordinate(values.latitude, MAX_LATITUDE) === null) {
+          context.addIssue({ code: 'custom', path: ['latitude'], message: LATITUDE_INVALID });
+        }
+        if (parseCoordinate(values.longitude, MAX_LONGITUDE) === null) {
+          context.addIssue({ code: 'custom', path: ['longitude'], message: LONGITUDE_INVALID });
+        }
+      }
       if (values.date !== keepDate) {
         if (values.date < tripStart || values.date > tripEnd) {
           context.addIssue({ code: 'custom', path: ['date'], message: DAY_OUT_OF_RANGE });
@@ -101,7 +140,18 @@ export const createStopFormSchema = ({
         context.addIssue({ code: 'custom', path: ['duration'], message: ENDS_AFTER_MIDNIGHT });
       }
     })
-    .transform(({ duration, ...rest }): StopInput => ({ ...rest, durationMin: duration }));
+    .transform(({ duration, latitude, longitude, ...rest }): StopInput => {
+      const parsedLatitude = parseCoordinate(latitude, MAX_LATITUDE);
+      const parsedLongitude = parseCoordinate(longitude, MAX_LONGITUDE);
+      return {
+        ...rest,
+        durationMin: duration,
+        coordinates:
+          parsedLatitude !== null && parsedLongitude !== null
+            ? { latitude: parsedLatitude, longitude: parsedLongitude }
+            : null,
+      };
+    });
 
 export type StopFormResult =
   | { success: true; data: StopInput }

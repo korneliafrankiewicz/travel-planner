@@ -26,6 +26,7 @@ const sampleStops: Stop[] = [
     durationMin: 30,
     notes: 'Alfama district',
     url: '',
+    coordinates: { latitude: 38.711, longitude: -9.1303 },
   },
   {
     id: 'sample-stop-2',
@@ -37,6 +38,7 @@ const sampleStops: Stop[] = [
     durationMin: 90,
     notes: '',
     url: '',
+    coordinates: { latitude: 38.7071, longitude: -9.1457 },
   },
   {
     id: 'sample-stop-3',
@@ -48,6 +50,7 @@ const sampleStops: Stop[] = [
     durationMin: 90,
     notes: '',
     url: '',
+    coordinates: { latitude: 38.6916, longitude: -9.216 },
   },
   {
     id: 'sample-stop-4',
@@ -59,6 +62,7 @@ const sampleStops: Stop[] = [
     durationMin: 45,
     notes: '',
     url: '',
+    coordinates: { latitude: 38.6975, longitude: -9.2032 },
   },
   {
     id: 'sample-stop-5',
@@ -70,6 +74,7 @@ const sampleStops: Stop[] = [
     durationMin: 480,
     notes: '',
     url: '',
+    coordinates: { latitude: 38.7876, longitude: -9.3906 },
   },
   {
     id: 'sample-stop-6',
@@ -81,6 +86,7 @@ const sampleStops: Stop[] = [
     durationMin: 30,
     notes: '',
     url: '',
+    coordinates: { latitude: 49.2992, longitude: 19.9496 },
   },
   {
     id: 'sample-stop-7',
@@ -92,6 +98,7 @@ const sampleStops: Stop[] = [
     durationMin: 360,
     notes: '',
     url: '',
+    coordinates: { latitude: 49.1988, longitude: 20.0708 },
   },
   {
     id: 'sample-stop-8',
@@ -103,6 +110,7 @@ const sampleStops: Stop[] = [
     durationMin: 60,
     notes: '',
     url: '',
+    coordinates: { latitude: 49.2005, longitude: 20.0705 },
   },
   {
     id: 'sample-stop-9',
@@ -114,6 +122,7 @@ const sampleStops: Stop[] = [
     durationMin: 240,
     notes: '',
     url: '',
+    coordinates: null,
   },
 ];
 

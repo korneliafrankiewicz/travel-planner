@@ -12,6 +12,17 @@ export const HTTPS_URL_PATTERN = /^https:\/\/[^\s/$.?#][^\s]*$/i;
 // A stop lasts at most one day.
 export const MAX_DURATION_MINUTES = 1440;
 
+export const MAX_LATITUDE = 90;
+export const MAX_LONGITUDE = 180;
+
+// A point on the map. Optional on a stop: not every stop has a known place.
+export const coordinatesSchema = z.object({
+  latitude: z.number().min(-MAX_LATITUDE).max(MAX_LATITUDE),
+  longitude: z.number().min(-MAX_LONGITUDE).max(MAX_LONGITUDE),
+});
+
+export type Coordinates = z.infer<typeof coordinatesSchema>;
+
 // A stop is one planned item (hotel, meal, sight, ...) on one day of a trip.
 // Stops of a day are ordered by `startTime`.
 export const stopSchema = z.object({
@@ -26,6 +37,8 @@ export const stopSchema = z.object({
   notes: z.string(),
   // Empty, or an https link.
   url: z.string().refine((value) => value === '' || HTTPS_URL_PATTERN.test(value)),
+  // Where the stop is. Stops saved before coordinates existed have none, hence the default.
+  coordinates: coordinatesSchema.nullable().default(null),
 });
 
 export type Stop = z.infer<typeof stopSchema>;

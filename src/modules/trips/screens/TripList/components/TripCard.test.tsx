@@ -29,6 +29,7 @@ const makeStops = (tripId: string, count: number): Stop[] =>
     durationMin: 30,
     notes: '',
     url: '',
+    coordinates: null,
   }));
 
 const renderCard = (trip: Trip, options?: { language?: 'en' | 'pl'; onPress?: () => void }) =>

@@ -29,6 +29,7 @@ const stop = (id: string, date: string, startTime: string, durationMin: number, 
   durationMin,
   notes: '',
   url: '',
+  coordinates: null,
 });
 
 const setToday = (year: number, month: number, day: number) =>

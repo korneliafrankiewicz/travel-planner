@@ -8,6 +8,8 @@ const values: StopFormValues = {
   duration: '90',
   notes: ' n ',
   url: '',
+  latitude: '',
+  longitude: '',
 };
 
 const options: Parameters<typeof validateStopForm>[1] = {
@@ -34,6 +36,7 @@ describe('validateStopForm', () => {
         durationMin: 90,
         notes: 'n',
         url: '',
+        coordinates: null,
       },
     });
   });
@@ -178,6 +181,67 @@ describe('validateStopForm', () => {
       startTime: 'stop.errors.timeInvalid',
       duration: 'stop.errors.durationInvalid',
       url: 'stop.errors.urlInvalid',
+    });
+  });
+
+  describe('coordinates', () => {
+    const coordinatesOf = (override: Partial<StopFormValues>) => {
+      const result = validateStopForm({ ...values, ...override }, options);
+      return result.success ? result.data.coordinates : 'invalid';
+    };
+
+    it('are optional: both empty means no place', () => {
+      expect(coordinatesOf({ latitude: '', longitude: '' })).toBeNull();
+      expect(coordinatesOf({ latitude: '  ', longitude: '  ' })).toBeNull();
+    });
+
+    it('become numbers when both are filled in', () => {
+      expect(coordinatesOf({ latitude: '38.7223', longitude: '-9.1393' })).toEqual({
+        latitude: 38.7223,
+        longitude: -9.1393,
+      });
+    });
+
+    it('accept a decimal comma, as typed on a Polish keyboard', () => {
+      expect(coordinatesOf({ latitude: '49,2992', longitude: '19,9496' })).toEqual({
+        latitude: 49.2992,
+        longitude: 19.9496,
+      });
+    });
+
+    it('accept the limits of the range', () => {
+      expect(coordinatesOf({ latitude: '-90', longitude: '180' })).toEqual({
+        latitude: -90,
+        longitude: 180,
+      });
+    });
+
+    it('need both values: a single one points at the missing one', () => {
+      expect(errorsOf({ latitude: '38.7', longitude: '' })).toEqual({
+        longitude: 'stop.errors.longitudeInvalid',
+      });
+      expect(errorsOf({ latitude: '', longitude: '-9.1' })).toEqual({
+        latitude: 'stop.errors.latitudeInvalid',
+      });
+    });
+
+    it.each(['abc', '91', '-90.5', '1e3', '38.7.2', '38.'])('reject a latitude of %p', (latitude) => {
+      expect(errorsOf({ latitude, longitude: '-9.1' })).toEqual({
+        latitude: 'stop.errors.latitudeInvalid',
+      });
+    });
+
+    it.each(['abc', '181', '-180.1', '1e3'])('reject a longitude of %p', (longitude) => {
+      expect(errorsOf({ latitude: '38.7', longitude })).toEqual({
+        longitude: 'stop.errors.longitudeInvalid',
+      });
+    });
+
+    it('report both fields when both are wrong', () => {
+      expect(errorsOf({ latitude: 'x', longitude: 'y' })).toEqual({
+        latitude: 'stop.errors.latitudeInvalid',
+        longitude: 'stop.errors.longitudeInvalid',
+      });
     });
   });
 });

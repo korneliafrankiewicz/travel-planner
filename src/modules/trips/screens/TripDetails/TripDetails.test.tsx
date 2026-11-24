@@ -32,6 +32,7 @@ const stop = (id: string, tripId: string, title = id): Stop => ({
   durationMin: 60,
   notes: '',
   url: '',
+  coordinates: null,
 });
 
 beforeEach(() => {
@@ -180,11 +181,65 @@ describe('TripDetails screen', () => {
     });
   });
 
+  describe('map', () => {
+    const withPlace = (item: Stop, latitude: number, longitude: number): Stop => ({
+      ...item,
+      coordinates: { latitude, longitude },
+    });
+
+    it('shows a pin for each stop that has a place, and none for the others', async () => {
+      useStopsStore.setState({
+        stops: [
+          withPlace(stop('s1', 'lisbon', 'Dinner'), 38.7071, -9.1457),
+          stop('s2', 'lisbon', 'Fado show'),
+          withPlace(stop('other', 'another-trip', 'Elsewhere'), 50, 20),
+        ],
+      });
+      await renderWithProviders(<TripDetails />);
+
+      expect(screen.getByTestId('map-view')).toBeVisible();
+      expect(screen.getByRole('button', { name: 'pin: Dinner, Day 1 · 19:00' })).toBeVisible();
+      expect(screen.queryByRole('button', { name: /pin: Fado show/ })).toBeNull();
+      expect(screen.queryByRole('button', { name: /pin: Elsewhere/ })).toBeNull();
+    });
+
+    it('still offers the Google Maps link below the map', async () => {
+      useStopsStore.setState({ stops: [withPlace(stop('s1', 'lisbon', 'Dinner'), 38.7, -9.1)] });
+      const user = userEvent.setup();
+      await renderWithProviders(<TripDetails />);
+
+      await user.press(screen.getByRole('button', { name: 'Open in Google Maps' }));
+
+      expect(Linking.openURL).toHaveBeenCalledTimes(1);
+    });
+
+    it('opens the stop when its pin label is tapped', async () => {
+      useStopsStore.setState({ stops: [withPlace(stop('s1', 'lisbon', 'Dinner'), 38.7, -9.1)] });
+      const user = userEvent.setup();
+      await renderWithProviders(<TripDetails />);
+
+      await user.press(screen.getByRole('button', { name: /pin: Dinner/ }));
+
+      expect(router.push).toHaveBeenCalledWith({
+        pathname: '/trip/[id]/stops/[stopId]',
+        params: { id: 'lisbon', stopId: 's1' },
+      });
+    });
+
+    it('labels the pins in Polish', async () => {
+      useStopsStore.setState({ stops: [withPlace(stop('s1', 'lisbon', 'Dinner'), 38.7, -9.1)] });
+      await renderWithProviders(<TripDetails />, { language: 'pl' });
+
+      expect(screen.getByRole('button', { name: 'pin: Dinner, Dzień 1 · 19:00' })).toBeVisible();
+    });
+  });
+
   describe('Google Maps', () => {
-    it('shows the destination in the map placeholder', async () => {
+    it('shows the destination in the map fallback card when no stop has a place', async () => {
       await renderWithProviders(<TripDetails />);
       expect(screen.getByRole('header', { name: 'Map' })).toBeVisible();
-      expect(screen.getByText('Map preview coming soon')).toBeVisible();
+      expect(screen.getByText('Add coordinates to a stop to see it on the map')).toBeVisible();
+      expect(screen.queryByTestId('map-view')).toBeNull();
     });
 
     it('opens a Google Maps search for the destination', async () => {

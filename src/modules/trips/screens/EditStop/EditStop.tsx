@@ -31,6 +31,8 @@ const EditStopForm = ({ trip, stop }: EditStopFormProps) => {
       duration: String(stop.durationMin),
       notes: stop.notes,
       url: stop.url,
+      latitude: stop.coordinates !== null ? String(stop.coordinates.latitude) : '',
+      longitude: stop.coordinates !== null ? String(stop.coordinates.longitude) : '',
     },
     // The stop's own day stays valid even if it is in the past or outside the trip.
     keepDate: stop.date,

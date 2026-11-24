@@ -34,7 +34,8 @@ export const trips = {
     noDestination: 'No destination set',
     map: {
       title: 'Map',
-      placeholder: 'Map preview coming soon',
+      empty: 'Add coordinates to a stop to see it on the map',
+      markerDescription: 'Day {{day}} · {{time}}',
       open: 'Open in Google Maps',
     },
   },
@@ -86,6 +87,18 @@ export const trips = {
         label: 'Duration (minutes)',
         placeholder: '60',
       },
+      location: {
+        label: 'Location',
+        hint: 'Optional. Enter both coordinates to show this stop on the map.',
+      },
+      latitude: {
+        label: 'Latitude',
+        placeholder: '38.7223',
+      },
+      longitude: {
+        label: 'Longitude',
+        placeholder: '-9.1393',
+      },
       url: {
         label: 'Link',
         placeholder: 'https://…',
@@ -104,6 +117,8 @@ export const trips = {
       durationInvalid: 'Enter the duration in minutes (0–1440)',
       endsAfterMidnight: 'The stop must end by midnight',
       urlInvalid: 'Enter a link starting with https://',
+      latitudeInvalid: 'Enter a latitude between -90 and 90, e.g. 38.7223',
+      longitudeInvalid: 'Enter a longitude between -180 and 180, e.g. -9.1393',
     },
   },
   form: {

@@ -17,6 +17,7 @@ const stop = (
   durationMin,
   notes: '',
   url: '',
+  coordinates: null,
   ...extra,
 });
 

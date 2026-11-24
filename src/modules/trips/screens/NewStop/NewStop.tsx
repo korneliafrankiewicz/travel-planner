@@ -30,6 +30,8 @@ const NewStopForm = ({ trip, date }: NewStopFormProps) => {
       duration: DEFAULT_DURATION,
       notes: '',
       url: '',
+      latitude: '',
+      longitude: '',
     },
     keepDate: null,
     onSave: (input) => addStop(trip.id, input),

@@ -15,6 +15,7 @@ const makeStop = (override: Partial<Stop> = {}): Stop => ({
   durationMin: 90,
   notes: '',
   url: '',
+  coordinates: null,
   ...override,
 });
 

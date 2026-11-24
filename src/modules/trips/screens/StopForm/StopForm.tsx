@@ -135,6 +135,40 @@ export const StopForm = ({ title, submitLabel, form, onDeleteRequest }: StopForm
             optional
             multiline
           />
+          <View style={styles.field}>
+            <Text style={[styles.label, { color: colors.textPrimary }]}>
+              {t('stop.fields.location.label')}
+            </Text>
+            <Text style={[styles.hint, { color: colors.textSecondary }]}>
+              {t('stop.fields.location.hint')}
+            </Text>
+            <View style={styles.row}>
+              <View style={styles.rowItem}>
+                <FormField
+                  label={t('stop.fields.latitude.label')}
+                  placeholder={t('stop.fields.latitude.placeholder')}
+                  value={values.latitude}
+                  onChangeText={(value) => setField('latitude', value)}
+                  keyboardType="numbers-and-punctuation"
+                  autoCorrect={false}
+                  optional
+                  error={errors.latitude !== undefined ? t(errors.latitude) : undefined}
+                />
+              </View>
+              <View style={styles.rowItem}>
+                <FormField
+                  label={t('stop.fields.longitude.label')}
+                  placeholder={t('stop.fields.longitude.placeholder')}
+                  value={values.longitude}
+                  onChangeText={(value) => setField('longitude', value)}
+                  keyboardType="numbers-and-punctuation"
+                  autoCorrect={false}
+                  optional
+                  error={errors.longitude !== undefined ? t(errors.longitude) : undefined}
+                />
+              </View>
+            </View>
+          </View>
           <FormField
             label={t('stop.fields.url.label')}
             placeholder={t('stop.fields.url.placeholder')}
@@ -206,6 +240,9 @@ const styles = StyleSheet.create({
   },
   error: {
     ...typography.footnote,
+  },
+  hint: {
+    ...typography.small,
   },
   row: {
     flexDirection: 'row',

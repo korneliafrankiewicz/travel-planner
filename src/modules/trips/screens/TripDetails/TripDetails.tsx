@@ -9,12 +9,13 @@ import { maxContentWidth, radius, spacing, typography, useTheme } from '@/shared
 import { ConfirmDialog } from '@/shared/ui/ConfirmDialog';
 import { IconButton } from '@/shared/ui/IconButton';
 
-import { useStopCount } from '../TripList/store/stopsStore';
+import { useStopCount, useStopsStore } from '../TripList/store/stopsStore';
 import { useTripsStore } from '../TripList/store/tripsStore';
 import { formatDateRange, getTripDayCount } from '../TripList/utils/tripDates';
 import { ItinerarySection } from './components/ItinerarySection';
-import { MapPlaceholder } from './components/MapPlaceholder';
+import { MapSection } from './components/MapSection';
 import { getGoogleMapsSearchUrl } from './utils/maps';
+import { getStopMarkers } from './utils/mapMarkers';
 
 const TripDetails = () => {
   const { t, i18n } = useTranslation('trips');
@@ -34,6 +35,7 @@ const TripDetails = () => {
   }
   const shownTrip = trip ?? lastTrip;
   const stopCount = useStopCount(shownTrip?.id ?? '');
+  const allStops = useStopsStore((state) => state.stops);
 
   // An unknown id (e.g. a stale link) has nothing to show, so go back to the list.
   if (shownTrip === undefined) {
@@ -64,6 +66,10 @@ const TripDetails = () => {
   };
 
   const dayCount = getTripDayCount(shownTrip);
+  const markers = getStopMarkers(
+    shownTrip,
+    allStops.filter((stop) => stop.tripId === shownTrip.id),
+  );
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={[styles.screen, { backgroundColor: colors.background }]}>
@@ -132,7 +138,17 @@ const TripDetails = () => {
 
         <ItinerarySection trip={shownTrip} />
 
-        <MapPlaceholder destination={shownTrip.destination} onOpenMaps={handleOpenMaps} />
+        <MapSection
+          destination={shownTrip.destination}
+          markers={markers}
+          onMarkerPress={(stopId) =>
+            router.push({
+              pathname: '/trip/[id]/stops/[stopId]',
+              params: { id: shownTrip.id, stopId },
+            })
+          }
+          onOpenMaps={handleOpenMaps}
+        />
       </ScrollView>
 
       <ConfirmDialog

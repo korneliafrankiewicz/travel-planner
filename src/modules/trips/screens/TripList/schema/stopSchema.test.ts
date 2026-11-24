@@ -17,6 +17,7 @@ const validStop = {
   durationMin: 90,
   notes: '',
   url: '',
+  coordinates: null,
 };
 
 describe('TIME_PATTERN', () => {
@@ -115,5 +116,41 @@ describe('parseStoredStops', () => {
       { ...validStop, id: 'bad-duration', durationMin: -1 },
     ]);
     expect(result?.map((stop) => stop.id)).toEqual(['stop-1']);
+  });
+});
+
+describe('stop coordinates', () => {
+  const { coordinates: _coordinates, ...savedBeforeCoordinatesExisted } = validStop;
+
+  it('are optional: a stop saved before coordinates existed gets none', () => {
+    const result = stopSchema.safeParse(savedBeforeCoordinatesExisted);
+    expect(result.success && result.data.coordinates).toBeNull();
+  });
+
+  it('keeps stops saved before coordinates existed when reading from storage', () => {
+    const stops = parseStoredStops([savedBeforeCoordinatesExisted]);
+    expect(stops).toHaveLength(1);
+    expect(stops?.[0]?.coordinates).toBeNull();
+  });
+
+  it('accepts a point on the map, including the edges of the range', () => {
+    for (const coordinates of [
+      { latitude: 38.7223, longitude: -9.1393 },
+      { latitude: -90, longitude: -180 },
+      { latitude: 90, longitude: 180 },
+    ]) {
+      expect(stopSchema.safeParse({ ...validStop, coordinates }).success).toBe(true);
+    }
+  });
+
+  it.each([
+    { latitude: 90.1, longitude: 0 },
+    { latitude: -91, longitude: 0 },
+    { latitude: 0, longitude: 180.1 },
+    { latitude: 0, longitude: -181 },
+    { latitude: 0 },
+    { latitude: '38.7', longitude: '-9.1' },
+  ])('rejects %p', (coordinates) => {
+    expect(stopSchema.safeParse({ ...validStop, coordinates }).success).toBe(false);
   });
 });

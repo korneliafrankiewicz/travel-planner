@@ -21,6 +21,8 @@ const initialValues: StopFormValues = {
   duration: '60',
   notes: '',
   url: '',
+  latitude: '',
+  longitude: '',
 };
 
 const renderForm = (options: { keepDate?: string | null; values?: Partial<StopFormValues> } = {}) => {
@@ -139,6 +141,7 @@ describe('submit', () => {
       durationMin: 90,
       notes: '',
       url: '',
+      coordinates: null,
     });
     expect(mockBack).toHaveBeenCalledTimes(1);
   });

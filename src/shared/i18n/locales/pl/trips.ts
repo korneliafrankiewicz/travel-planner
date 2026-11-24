@@ -42,7 +42,8 @@ export const trips: Translations<typeof en> = {
     noDestination: 'Nie ustawiono celu podróży',
     map: {
       title: 'Mapa',
-      placeholder: 'Podgląd mapy wkrótce',
+      empty: 'Dodaj współrzędne do punktu, aby zobaczyć go na mapie',
+      markerDescription: 'Dzień {{day}} · {{time}}',
       open: 'Otwórz w Mapach Google',
     },
   },
@@ -94,6 +95,18 @@ export const trips: Translations<typeof en> = {
         label: 'Czas trwania (minuty)',
         placeholder: '60',
       },
+      location: {
+        label: 'Lokalizacja',
+        hint: 'Opcjonalne. Podaj obie współrzędne, aby pokazać ten punkt na mapie.',
+      },
+      latitude: {
+        label: 'Szerokość geograficzna',
+        placeholder: '38.7223',
+      },
+      longitude: {
+        label: 'Długość geograficzna',
+        placeholder: '-9.1393',
+      },
       url: {
         label: 'Link',
         placeholder: 'https://…',
@@ -112,6 +125,8 @@ export const trips: Translations<typeof en> = {
       durationInvalid: 'Podaj czas trwania w minutach (0–1440)',
       endsAfterMidnight: 'Punkt musi kończyć się do północy',
       urlInvalid: 'Podaj link zaczynający się od https://',
+      latitudeInvalid: 'Podaj szerokość geograficzną od -90 do 90, np. 38.7223',
+      longitudeInvalid: 'Podaj długość geograficzną od -180 do 180, np. -9.1393',
     },
   },
   form: {
