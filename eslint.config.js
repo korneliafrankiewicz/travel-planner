@@ -5,6 +5,7 @@ const expoConfig = require('eslint-config-expo/flat');
 module.exports = defineConfig([
   expoConfig,
   {
-    ignores: ['dist/*'],
+    // The back end in server/ has its own lint setup (it is Node code, not React Native).
+    ignores: ['dist/*', 'server/**'],
   },
 ]);

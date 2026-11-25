@@ -1,6 +1,6 @@
 # travel-planner
 
-Expo / React Native app. See `AGENTS.md` for Expo-specific instructions. Documentation lives in `docs/` (start at `docs/README.md`); keep it up to date when behavior, setup or conventions change.
+Expo / React Native app. See `AGENTS.md` for Expo-specific instructions. The back end (Node.js) lives in `server/` with its own lint, typecheck and tests (see `docs/backend.md`); the app's tooling ignores it. Documentation lives in `docs/` (start at `docs/README.md`); keep it up to date when behavior, setup or conventions change.
 
 ## Rules
 

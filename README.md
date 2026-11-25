@@ -9,6 +9,7 @@ A mobile app to plan trips day by day, with a map and travel time between stops.
 - Expo Router (file-based navigation)
 - Zustand (client state)
 - expo-secure-store (the login token only)
+- Back end in [`server/`](server): Node.js, Fastify, PostgreSQL
 
 ## Documentation
 

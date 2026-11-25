@@ -30,6 +30,10 @@ computer must be on the same network.
 Edits to the code reload the app by themselves. If you do not see a change, see
 [Troubleshooting](troubleshooting.md#the-app-does-not-show-my-changes).
 
+## The back end
+
+The app does not need the back end yet. To run it, see [Back end](backend.md#run-it).
+
 ## Check your work
 
 Lint and typecheck must pass, and the tests should pass, before a task is done.

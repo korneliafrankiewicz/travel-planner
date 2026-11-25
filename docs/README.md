@@ -8,6 +8,8 @@ stops, a route with distances for each day, and place search.
 | [Getting started](getting-started.md) | Run the app, the tests, lint and typecheck |
 | [Architecture](architecture.md) | Understand the folders, the data and how screens fit together |
 | [Conventions](conventions.md) | Write code that matches the project's rules |
+| [Back end](backend.md) | Run and understand the server, or prepare it for production |
+| [API](api.md) | See what the app can ask the server |
 | [Authentication](auth.md) | Understand log in and sign up, or connect a real back end |
 | [Maps and place search](maps-and-search.md) | Work on maps, routes or search, or prepare a release |
 | [Testing](testing.md) | Write or run tests |
@@ -26,6 +28,8 @@ together.
   [Troubleshooting](troubleshooting.md#i-do-not-see-the-maps-or-the-route).
 - **Log in and sign up work with a stand-in for the back end** that accepts any password. See
   [Authentication](auth.md). It must be replaced before a release.
+- **The real back end has been started** in `server/` (accounts only). The app does not use it
+  yet. See [Back end](backend.md) and [API](api.md).
 - Not done yet: the Security section and "Delete account and data" in Settings, walking or
   driving routes (distances are straight lines), and the Google Maps API key that Android
   release builds need.

@@ -55,3 +55,6 @@ reports/
 
 # Claude Code local settings
 .claude/settings.local.json
+
+# development databases of the back end (server/.data and any server/.data-* folder)
+server/.data*/

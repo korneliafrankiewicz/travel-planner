@@ -103,8 +103,12 @@ To try the error states of the screens, use these values:
 The app only talks to the `AuthService` interface, so the screens, the session store and the tests
 stay as they are. To connect a service:
 
+A back end for this exists in `server/` (see [Back end](backend.md) and [API](api.md)), but the
+app does not use it yet.
+
 1. Write an implementation of `AuthService` (for example `httpAuthService.ts`) that calls the
-   back end and turns every failure into an `AuthError` with the right `code`
+   back end ([API: Connecting the app](api.md#connecting-the-app) lists the calls) and turns every
+   failure into an `AuthError` with the right `code`
    (`invalidCredentials`, `emailTaken`, `invalidSession`, `network`, `unknown`).
 2. Use it in `src/shared/auth/authService.ts`, in place of the stand-in.
 3. Keep the rules in [Conventions](conventions.md#data-and-storage): check what comes back with

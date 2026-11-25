@@ -14,6 +14,7 @@
 ## Folders
 
 ```
+server/             The back end (a separate Node.js project; see Back end)
 src/
   app/              Routes. Thin: each file only re-exports a screen.
   components/       The tab bar (app-tabs, with a .web.tsx variant).

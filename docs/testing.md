@@ -1,5 +1,8 @@
 # Testing
 
+This page is about the **app**. The back end in `server/` has its own tests (Vitest); see
+[Back end](backend.md#run-it).
+
 Tests use **Jest** (`jest-expo` preset) and **React Testing Library** for React Native
 (version 14). Test files sit next to the code they test: `Thing.tsx` and `Thing.test.tsx`.
 
