@@ -21,15 +21,16 @@ together.
 
 ## Status
 
-- The app keeps everything **on the device**. There is no backend yet. Places in the code that
-  will change when it exists are marked `TODO` (for example in `tripsStore.ts`).
+- The app keeps trips and stops **on the device**. The back end so far only handles accounts.
+  Places in the code that will change once trips move to the server are marked `TODO` (for example
+  in `tripsStore.ts`).
 - Trips and stops start from **sample data** on the very first launch. To get it back while
   testing, use **Settings > Developer > Reset sample data** (development only). See
   [Troubleshooting](troubleshooting.md#i-do-not-see-the-maps-or-the-route).
-- **Log in and sign up work with a stand-in for the back end** that accepts any password. See
-  [Authentication](auth.md). It must be replaced before a release.
-- **The real back end has been started** in `server/` (accounts only). The app does not use it
-  yet. See [Back end](backend.md) and [API](api.md).
-- Not done yet: the Security section and "Delete account and data" in Settings, walking or
+- **Log in, sign up and password reset can use the real back end** in `server/` (set
+  `EXPO_PUBLIC_API_URL`), or a stand-in that accepts any password when it is not set. See
+  [Authentication](auth.md), [Back end](backend.md) and [API](api.md). A release must use a real
+  server.
+- Not done yet: trips and stops on the server, the Security section and "Delete account and data" in Settings, walking or
   driving routes (distances are straight lines), and the Google Maps API key that Android
   release builds need.

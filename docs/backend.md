@@ -52,6 +52,22 @@ Without `DATABASE_URL` the server uses a **development database** saved in `serv
 
 Lint, typecheck and the tests must pass, as in the app.
 
+### Using it from the app
+
+The app uses this server when `EXPO_PUBLIC_API_URL` is set (see
+[Authentication](auth.md#which-service-the-app-uses)). The short version for development:
+
+1. In `server/`, start the server so that a phone can reach it: `HOST=0.0.0.0 npm run dev`.
+2. In the project root, put `EXPO_PUBLIC_API_URL=auto` in `.env.local`, then `npx expo start --clear`.
+
+`HOST=0.0.0.0` makes the server visible to **everyone on the same network**. That is fine on a
+trusted home or office network while developing; do not do it on a public one. The default,
+`127.0.0.1`, is only reachable from the computer itself (which is enough for the iOS Simulator and
+for `curl`, but not for a phone or an Android emulator).
+
+The app and the server are checked against each other by a contract test, which runs as part of
+`npm test` here (see [Testing](testing.md#the-contract-test)).
+
 ### Trying the password reset
 
 There is no email provider yet. In development the server prints the reset link in its log:
@@ -60,7 +76,8 @@ There is no email provider yet. In development the server prints the reset link 
 [dev mail] Password reset for anna@example.com: travel-planner://reset-password?token=...
 ```
 
-Copy the token into `POST /v1/auth/password-reset/confirm` (see [API](api.md)).
+With the app, open that link (see [the password reset link](auth.md#the-password-reset-link)). Or
+copy the token into `POST /v1/auth/password-reset/confirm` (see [API](api.md)).
 
 ## Settings
 
@@ -154,6 +171,8 @@ by your security team before real users depend on it.
 - **Secrets.** Keep `DATABASE_URL` and any future keys in the platform's secret store or `.env`,
   never in code.
 - **Backups, monitoring and alerts** for the database and the server.
+- **The app's address.** A release build must set `EXPO_PUBLIC_API_URL` to the server's **https**
+  address; the app refuses plain `http://` outside development.
 - **Personal data.** Accounts hold a name and an email address. Involve your **Data Privacy
   Officer** about what is stored, for how long, and how an account and its data are erased
   (there is no delete-account endpoint yet).

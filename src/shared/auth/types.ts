@@ -24,6 +24,10 @@ export type AuthErrorCode =
   | 'emailTaken'
   // The saved token is no longer accepted (expired, revoked or unknown).
   | 'invalidSession'
+  // A password reset link that is unknown, already used or expired.
+  | 'invalidResetToken'
+  // Too many requests in a short time; the user has to wait.
+  | 'rateLimited'
   | 'network'
   | 'unknown';
 
@@ -51,4 +55,7 @@ export type AuthService = {
   // Starts a password reset. Resolves in the same way whether or not the address has an
   // account, so the answer cannot be used to find out who has one.
   requestPasswordReset: (email: string) => Promise<void>;
+  // Chooses a new password with the token from the link in the reset email. The token works
+  // once. Rejects with `invalidResetToken` when it is unknown, used or expired.
+  confirmPasswordReset: (token: string, password: string) => Promise<void>;
 };

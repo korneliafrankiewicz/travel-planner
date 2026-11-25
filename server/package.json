@@ -12,7 +12,7 @@
     "build": "tsc -p tsconfig.build.json && node scripts/copy-migrations.mjs",
     "start": "node --env-file-if-exists=.env dist/index.js",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p contract/tsconfig.json",
     "test": "vitest run",
     "test:watch": "vitest"
   },

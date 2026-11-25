@@ -1,7 +1,8 @@
 # Testing
 
 This page is about the **app**. The back end in `server/` has its own tests (Vitest); see
-[Back end](backend.md#run-it).
+[Back end](backend.md#run-it). The one test that covers both is described
+[below](#the-contract-test).
 
 Tests use **Jest** (`jest-expo` preset) and **React Testing Library** for React Native
 (version 14). Test files sit next to the code they test: `Thing.tsx` and `Thing.test.tsx`.
@@ -57,6 +58,25 @@ Run one file or folder with `npx jest <path>`, and one test with `-t "part of th
   see an existing auth screen test). Then `mockedAuthService` gives the stand-in,
   `resetAuth()` puts the session back to "logged out", and `deferred()` makes a promise the test
   settles by hand, to look at the screen while a request is still running.
+
+## The contract test
+
+The app and the server are written separately, so a test makes sure they agree:
+`server/contract/app-contract.test.ts`. It runs in the **server's** tests (`npm test` in `server/`),
+because that is where both can be loaded. It does two things:
+
+- It runs the app's real `httpAuthService` against the real server code, in memory (no network
+  port), through every call and every error code.
+- It gives the form rules of the app (`authSchemas.ts`) and of the server (`schemas.ts`) the same
+  inputs, many emails, names and passwords, and compares the verdicts. It also registers every
+  form that the app accepts on the real server.
+
+If you change a rule, a message code or an endpoint on one side, this test fails until the other
+side follows. When it finds a mismatch, fix the side that is wrong; do not loosen the test.
+
+In the app's own tests the auth service is **never real**: `jest.setup.js` replaces
+`@/shared/auth/authService` with methods that fail loudly, so a test that needs the service has to
+mock it (see `authTestUtils`).
 
 ## Patterns that matter
 

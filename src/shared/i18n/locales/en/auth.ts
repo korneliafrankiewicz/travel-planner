@@ -33,6 +33,20 @@ export const auth = {
     sentMessage: 'If an account exists for {{email}}, we have sent a link to reset the password.',
     backToLogIn: 'Back to log in',
   },
+  resetPassword: {
+    title: 'Choose a new password',
+    subtitle: 'Choose a new password for your account.',
+    submit: 'Save password',
+    submitting: 'Saving…',
+    successTitle: 'Password changed',
+    successMessage: 'You can now log in with your new password.',
+    logIn: 'Log in',
+    invalidTitle: 'This link is not valid',
+    invalidMessage: 'The link to reset the password is missing or incomplete. Ask for a new one.',
+    requestNew: 'Request a new link',
+    linkNotWorking: 'Link not working?',
+    newOne: 'Request a new one',
+  },
   fields: {
     name: {
       label: 'Name',
@@ -50,6 +64,9 @@ export const auth = {
     confirmPassword: {
       label: 'Confirm password',
     },
+    newPassword: {
+      label: 'New password',
+    },
   },
   strength: {
     label: 'Password strength',
@@ -64,6 +81,7 @@ export const auth = {
     emailInvalid: 'Enter a valid email address',
     passwordRequired: 'Enter your password',
     passwordTooShort: 'Use at least 8 characters',
+    passwordTooLong: 'Use at most 128 characters',
     passwordTooWeak: 'Use both letters and numbers',
     passwordsDoNotMatch: 'The passwords do not match',
     termsRequired: 'Accept the terms to create an account',
@@ -72,6 +90,8 @@ export const auth = {
     invalidCredentials: 'Wrong email or password',
     emailTaken: 'An account with this email already exists',
     network: 'Could not reach the server. Check your connection and try again.',
+    invalidResetToken: 'This reset link has expired or was already used. Ask for a new one.',
+    rateLimited: 'Too many attempts. Wait a minute and try again.',
     unknown: 'Something went wrong. Please try again.',
   },
 } as const;

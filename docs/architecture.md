@@ -19,7 +19,7 @@ src/
   app/              Routes. Thin: each file only re-exports a screen.
   components/       The tab bar (app-tabs, with a .web.tsx variant).
   modules/
-    auth/           Welcome, Login, SignUp, ForgotPassword (and components shared by them)
+    auth/           Welcome, Login, SignUp, ForgotPassword, ResetPassword (and shared components)
     trips/screens/  TripList, NewTrip, EditTrip, TripDetails, NewStop, EditStop, StopForm
     settings/screens/Settings
     profile/screens/Profile
@@ -51,6 +51,7 @@ Every file in `src/app/` is a screen, and each one is a one-line re-export:
 | `login` | `Login` | Pushed screen | logged out |
 | `sign-up` | `SignUp` | Pushed screen | logged out |
 | `forgot-password` | `ForgotPassword` | Pushed screen | logged out |
+| `reset-password` | `ResetPassword` (needs a `token` parameter) | Pushed screen | logged out |
 | `(tabs)/index` | `TripList` | Home tab | logged in |
 | `(tabs)/settings` | `Settings` | Settings tab | logged in |
 | `profile` | `Profile` | Pushed screen | logged in |
