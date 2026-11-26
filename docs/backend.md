@@ -52,6 +52,62 @@ Without `DATABASE_URL` the server uses a **development database** saved in `serv
 
 Lint, typecheck and the tests must pass, as in the app.
 
+### Looking at the data
+
+The development database in `server/.data/pglite` is a complete PostgreSQL data directory
+(`base/` holds the tables, `pg_wal/` the write-ahead log). Its files are in PostgreSQL's
+internal binary format, so **they cannot be opened or searched in an editor**, and PGlite has no
+network port that a database app could connect to. Two cautions:
+
+- **Never open the folder while `npm run dev` is running.** PGlite allows one process at a time,
+  and a second one can corrupt the data. Stop the server, or work on a copy of the folder.
+- **No password is stored anywhere.** `users.password_hash` is a scrypt hash that cannot be
+  turned back into the password, and only the SHA-256 hash of a session or reset token is
+  stored. Do not paste hashes into chats or tickets.
+
+To browse the data with a normal database tool, run a real PostgreSQL locally, as below. The
+data in the PGlite folder is **not** copied over: the new database starts empty, so sign up again.
+
+#### Using a real PostgreSQL locally
+
+On macOS with [Homebrew](https://brew.sh) (any PostgreSQL 13 or newer works):
+
+```bash
+brew install postgresql@17
+brew services start postgresql@17
+export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"   # if `createdb` is not found
+createdb travel_planner
+```
+
+Then set the address in `server/.env` (git-ignored) and start the server:
+
+```
+DATABASE_URL=postgres://localhost:5432/travel_planner
+```
+
+```bash
+cd server && npm run dev
+```
+
+On start the server applies the migrations and creates the tables, and the log no longer says
+"Using the development database". A Homebrew install has a superuser named after your account and
+no password, which is enough locally; use a proper user and password for anything shared, and
+keep them in `.env`, never in the code.
+
+Connect a database app (for example [TablePlus](https://tableplus.com) or
+[DBeaver](https://dbeaver.io)) with host `localhost`, port `5432`, database `travel_planner` and
+your user name, or use `psql travel_planner`. You will see `users`, `sessions`,
+`password_resets` and `schema_migrations`. For example:
+
+```sql
+SELECT id, email, name, created_at FROM users;
+```
+
+Select the columns you need instead of `*`, so `password_hash` stays out of sight. The emails and
+names in this database are personal data: do not share it, and remove it when you no longer
+need it with `dropdb travel_planner`. The end-to-end tests are not affected, because they
+clear `DATABASE_URL` and use their own throwaway database (see [Testing](testing.md#end-to-end-tests)).
+
 ### Using it from the app
 
 The app uses this server when `EXPO_PUBLIC_API_URL` is set (see
