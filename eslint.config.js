@@ -8,4 +8,8 @@ module.exports = defineConfig([
     // The back end in server/ has its own lint setup (it is Node code, not React Native).
     ignores: ['dist/*', 'server/**'],
   },
+  {
+    // Reports and files that a test run generates.
+    ignores: ['coverage/**', 'report/**', 'playwright-report/**', 'test-results/**', 'e2e/.tmp/**'],
+  },
 ]);

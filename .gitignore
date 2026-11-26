@@ -58,3 +58,8 @@ reports/
 
 # development databases of the back end (server/.data and any server/.data-* folder)
 server/.data*/
+
+# Playwright end-to-end tests: reports, traces and the throwaway back end of a run
+playwright-report/
+test-results/
+e2e/.tmp/
