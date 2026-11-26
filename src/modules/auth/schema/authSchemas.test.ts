@@ -1,6 +1,7 @@
 import {
   validateForgotPassword,
   validateLogIn,
+  validateResetPassword,
   validateSignUp,
   type SignUpValues,
 } from './authSchemas';
@@ -79,6 +80,14 @@ describe('validateLogIn', () => {
     const result = validateLogIn({ email: 'a@b.co', password: '  Secret 123  ' });
     expect(result.success && result.data.password).toBe('  Secret 123  ');
   });
+
+  it('refuses a password that is too long for the server, instead of sending it', () => {
+    expect(validateLogIn({ email: 'a@b.co', password: 'x'.repeat(128) }).success).toBe(true);
+    expect(validateLogIn({ email: 'a@b.co', password: 'x'.repeat(129) })).toEqual({
+      success: false,
+      errors: { password: 'errors.passwordTooLong' },
+    });
+  });
 });
 
 describe('validateSignUp', () => {
@@ -145,6 +154,23 @@ describe('validateSignUp', () => {
     it('accepts letters other than English ones next to a number', () => {
       expect(signUpErrors({ password: 'Zażółć123', confirmPassword: 'Zażółć123' })).toBeNull();
     });
+
+    it.each(['żółćżółć1', 'пароль12345', 'パスワード1234'])(
+      'accepts a password with no English letters at all: %p',
+      (password) => {
+        expect(signUpErrors({ password, confirmPassword: password })).toBeNull();
+      },
+    );
+
+    it('may be 128 characters long, and not longer, as the server does not accept more', () => {
+      const longest = `a1${'x'.repeat(126)}`;
+      expect(signUpErrors({ password: longest, confirmPassword: longest })).toBeNull();
+
+      const tooLong = `${longest}x`;
+      expect(signUpErrors({ password: tooLong, confirmPassword: tooLong })).toEqual({
+        password: 'errors.passwordTooLong',
+      });
+    });
   });
 
   describe('confirm password', () => {
@@ -183,5 +209,45 @@ describe('validateSignUp', () => {
       expect(typeof value).toBe('string');
     }
     expect(Object.keys(errors ?? {}).sort()).toEqual(['confirmPassword', 'email', 'name', 'password']);
+  });
+});
+
+describe('validateResetPassword', () => {
+  it('accepts a password that follows the rules, with the same confirmation', () => {
+    expect(validateResetPassword({ password: 'NewSecret456', confirmPassword: 'NewSecret456' })).toEqual({
+      success: true,
+      data: { password: 'NewSecret456', confirmPassword: 'NewSecret456' },
+    });
+  });
+
+  it.each([
+    ['too short', 'Abc123', 'errors.passwordTooShort'],
+    ['without numbers', 'abcdefghij', 'errors.passwordTooWeak'],
+    ['without letters', '1234567890', 'errors.passwordTooWeak'],
+    ['too long', `a1${'x'.repeat(127)}`, 'errors.passwordTooLong'],
+  ])('refuses a password that is %s', (_name, password, key) => {
+    expect(validateResetPassword({ password, confirmPassword: password })).toEqual({
+      success: false,
+      errors: { password: key },
+    });
+  });
+
+  it('refuses a confirmation that is different, even by a space', () => {
+    expect(validateResetPassword({ password: 'NewSecret456', confirmPassword: 'NewSecret456 ' })).toEqual({
+      success: false,
+      errors: { confirmPassword: 'errors.passwordsDoNotMatch' },
+    });
+  });
+
+  it('asks for both on an empty form', () => {
+    expect(validateResetPassword({ password: '', confirmPassword: '' })).toEqual({
+      success: false,
+      errors: { password: 'errors.passwordTooShort' },
+    });
+  });
+
+  it('does not trim the password', () => {
+    const result = validateResetPassword({ password: ' NewSecret456 ', confirmPassword: ' NewSecret456 ' });
+    expect(result.success && result.data.password).toBe(' NewSecret456 ');
   });
 });

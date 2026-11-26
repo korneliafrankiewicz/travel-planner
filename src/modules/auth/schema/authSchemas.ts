@@ -8,6 +8,7 @@ const EMAIL_REQUIRED = 'errors.emailRequired';
 const EMAIL_INVALID = 'errors.emailInvalid';
 const PASSWORD_REQUIRED = 'errors.passwordRequired';
 const PASSWORD_TOO_SHORT = 'errors.passwordTooShort';
+const PASSWORD_TOO_LONG = 'errors.passwordTooLong';
 const PASSWORD_TOO_WEAK = 'errors.passwordTooWeak';
 const PASSWORDS_DO_NOT_MATCH = 'errors.passwordsDoNotMatch';
 const TERMS_REQUIRED = 'errors.termsRequired';
@@ -18,6 +19,7 @@ export type AuthErrorKey =
   | typeof EMAIL_INVALID
   | typeof PASSWORD_REQUIRED
   | typeof PASSWORD_TOO_SHORT
+  | typeof PASSWORD_TOO_LONG
   | typeof PASSWORD_TOO_WEAK
   | typeof PASSWORDS_DO_NOT_MATCH
   | typeof TERMS_REQUIRED;
@@ -28,6 +30,7 @@ const errorKeys: readonly string[] = [
   EMAIL_INVALID,
   PASSWORD_REQUIRED,
   PASSWORD_TOO_SHORT,
+  PASSWORD_TOO_LONG,
   PASSWORD_TOO_WEAK,
   PASSWORDS_DO_NOT_MATCH,
   TERMS_REQUIRED,
@@ -37,6 +40,9 @@ const isErrorKey = (message: string): message is AuthErrorKey => errorKeys.inclu
 
 const MAX_NAME_LENGTH = 80;
 const MAX_EMAIL_LENGTH = 254;
+// The server refuses longer passwords (hashing one costs time and memory), so the app must too,
+// or it would send a form that is bound to fail.
+const MAX_PASSWORD_LENGTH = 128;
 // Something, an @, something, a dot and something: enough to catch typos. Only the service can
 // tell whether an address really exists.
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -56,13 +62,18 @@ const emailSchema = z
 const newPasswordSchema = z
   .string()
   .min(MIN_PASSWORD_LENGTH, { error: PASSWORD_TOO_SHORT })
-  .refine((password) => /[A-Za-z]/.test(password) && /\d/.test(password), {
+  .max(MAX_PASSWORD_LENGTH, { error: PASSWORD_TOO_LONG })
+  // Any letter counts, not only English ones: "żółćżółć1" is a fine password.
+  .refine((password) => /\p{L}/u.test(password) && /\d/.test(password), {
     error: PASSWORD_TOO_WEAK,
   });
 
 const logInSchema = z.object({
   email: emailSchema,
-  password: z.string().min(1, { error: PASSWORD_REQUIRED }),
+  password: z
+    .string()
+    .min(1, { error: PASSWORD_REQUIRED })
+    .max(MAX_PASSWORD_LENGTH, { error: PASSWORD_TOO_LONG }),
 });
 
 const signUpSchema = z
@@ -81,6 +92,14 @@ const signUpSchema = z
 
 const forgotPasswordSchema = z.object({ email: emailSchema });
 
+const resetPasswordSchema = z
+  .object({ password: newPasswordSchema, confirmPassword: z.string() })
+  .superRefine((values, context) => {
+    if (values.confirmPassword !== values.password) {
+      context.addIssue({ code: 'custom', path: ['confirmPassword'], message: PASSWORDS_DO_NOT_MATCH });
+    }
+  });
+
 export type LogInValues = { email: string; password: string };
 export type SignUpValues = {
   name: string;
@@ -90,6 +109,7 @@ export type SignUpValues = {
   acceptTerms: boolean;
 };
 export type ForgotPasswordValues = { email: string };
+export type ResetPasswordValues = { password: string; confirmPassword: string };
 
 export const emptyLogInValues: LogInValues = { email: '', password: '' };
 export const emptySignUpValues: SignUpValues = {
@@ -100,6 +120,7 @@ export const emptySignUpValues: SignUpValues = {
   acceptTerms: false,
 };
 export const emptyForgotPasswordValues: ForgotPasswordValues = { email: '' };
+export const emptyResetPasswordValues: ResetPasswordValues = { password: '', confirmPassword: '' };
 
 export type FormResult<Data, Field extends string> =
   | { success: true; data: Data }
@@ -133,3 +154,6 @@ export const validateSignUp = (values: SignUpValues) =>
 
 export const validateForgotPassword = (values: ForgotPasswordValues) =>
   validate(forgotPasswordSchema, values, ['email'] as const);
+
+export const validateResetPassword = (values: ResetPasswordValues) =>
+  validate(resetPasswordSchema, values, ['password', 'confirmPassword'] as const);

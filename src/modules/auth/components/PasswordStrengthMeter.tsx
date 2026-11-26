@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { radius, spacing, typography, useTheme } from '@/shared/theme';
 
-import { getPasswordStrength, type PasswordStrength } from '../../../utils/passwordStrength';
+import { getPasswordStrength, type PasswordStrength } from '../utils/passwordStrength';
 
 const SEGMENTS = 3;
 const filledSegments: Record<PasswordStrength, number> = { weak: 1, fair: 2, strong: 3 };

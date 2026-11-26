@@ -225,6 +225,14 @@ describe('Login screen', () => {
         );
       });
 
+      it('tells the user to wait when there have been too many attempts', async () => {
+        await failWith(new AuthError('rateLimited'));
+
+        expect(await screen.findByRole('alert')).toHaveTextContent(
+          'Too many attempts. Wait a minute and try again.',
+        );
+      });
+
       it('gives a general message for anything else', async () => {
         await failWith(new AuthError('unknown'));
 

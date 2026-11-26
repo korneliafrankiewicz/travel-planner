@@ -1,8 +1,9 @@
 # Authentication
 
-Log in, sign up and password reset, with a **stand-in** for the back end. The screens, the
-session handling and the secure storage of the token are real. The part that talks to a server is
-a fake that is meant to be replaced.
+Log in, sign up and password reset. The screens, the session handling and the secure storage of the
+token are real. The part that talks to a server is chosen by one setting: the **real back end** in
+`server/` ([Back end](backend.md)), or a **stand-in** that runs inside the app so it can be tried
+without a server.
 
 ## What the user sees
 
@@ -11,6 +12,7 @@ Launch → splash → "Checking your session…" spinner
             ├─ logged in   → the app (Trips, Settings, ...)
             └─ logged out  → Welcome → Log in ↔ Create account
                                           └─ Forgot password → "Check your email"
+                                                  └─ (link in the email) → Choose a new password
 ```
 
 | Screen | Route | What it does |
@@ -19,6 +21,7 @@ Launch → splash → "Checking your session…" spinner
 | Log in | `/login` | Email and password, a link to reset the password, a link to sign up |
 | Create account | `/sign-up` | Name, email, password (with a strength meter), confirmation, terms |
 | Forgot password | `/forgot-password` | Email, then a "Check your email" confirmation |
+| Choose a new password | `/reset-password?token=...` | Opened by the link in the reset email: new password, confirmation |
 
 Every button that sends a request shows a **spinner**, ignores more taps and locks the fields
 until the answer comes. Errors that belong to one field show under it. Errors of the whole form
@@ -80,6 +83,59 @@ describe this: <https://docs.expo.dev/router/advanced/protected.md>.
 - Saving never throws. A token that cannot be read counts as "no token", and one that cannot be
   saved lives until the app closes.
 
+## Which service the app uses
+
+`src/shared/auth/authService.ts` picks the service from `EXPO_PUBLIC_API_URL`. Put it in a
+`.env.local` file in the project root (copy `env.example`), and restart Expo with
+`npx expo start --clear`:
+
+| `EXPO_PUBLIC_API_URL` | The app uses |
+| --- | --- |
+| not set | The **stand-in** inside the app. No server is needed, any password works |
+| `auto` | The server in `server/` on the computer that runs Expo (port 3000). **Development only.** The computer's address is read from Expo, so it works on a phone too |
+| `https://api.example.com` | That server. A plain `http://` address is accepted in development only |
+
+The app refuses to start with a setting that is not valid (not an address, a user name or password
+in it, a query, or `http://` or `auto` outside development), so a mistake in a build is found at
+once and not by a user. The setting is visible in the built app, so it must be an address and never
+a secret. In development the app prints which service it uses (`[auth] Using the back end at ...`).
+
+### Using the real server
+
+1. Start the server so that it can be reached from the network. In `server/`:
+   `HOST=0.0.0.0 npm run dev` (see [Back end](backend.md#using-it-from-the-app)).
+2. In the project root create `.env.local` with `EXPO_PUBLIC_API_URL=auto`.
+3. Run `npx expo start --clear` and open the app. Log in, sign up and password reset now go to the
+   server. Your accounts are in the server's development database (`server/.data/`).
+
+### How the app talks to the server
+
+`src/shared/auth/httpAuthService.ts` implements `AuthService` over HTTP ([API](api.md)):
+
+- Every answer is **checked with Zod** before it is used. An answer in another shape, or with the
+  wrong status, is an `unknown` error.
+- The server's error codes become the app's `AuthError` codes: `invalidCredentials`, `emailTaken`,
+  `invalidSession`, `invalidResetToken` and `rateLimited` have their own messages. A lost
+  connection or no answer in 15 seconds is `network`. Everything else is `unknown`.
+- A password or a token is only ever sent to the configured address, in the body or the
+  `Authorization` header. Never in a URL, never to the console.
+- The same `AuthService` is behind the screens either way, so they cannot tell the two apart.
+
+A **contract test** in the server's tests (`server/contract/`) runs this service against the real
+server code and checks that the form rules in the app and on the server give the same verdict for
+many inputs. See [Testing](testing.md#the-contract-test).
+
+### The password reset link
+
+The email holds a link made from `PASSWORD_RESET_URL` on the server, with `?token=...`. In
+development there is no email provider: the server prints the link in its log. The app's own scheme
+(`travel-planner://reset-password?token=...`) only opens the app in a development or production
+build; **in Expo Go** the link has to look like `exp://<your computer>:8081/--/reset-password?token=...`,
+so set `PASSWORD_RESET_URL` on the server accordingly.
+
+The reset screen is only available when logged out. A logged-in user who opens the link is taken
+into the app (the route is protected).
+
 ## The stand-in for the back end
 
 `createFakeAuthService` keeps **no accounts and no passwords**. It accepts any email and password,
@@ -87,7 +143,7 @@ names the user after the email (`anna.nowak@example.com` becomes "Anna Nowak"), 
 simply carries the user, so a session survives a restart. It waits 700 ms before every answer so
 the spinners can be seen.
 
-**It is not secure and must be replaced before a release.** `authService.ts` has a `TODO` for it.
+**It is not secure.** A release must always set `EXPO_PUBLIC_API_URL` to a real server.
 
 To try the error states of the screens, use these values:
 
@@ -96,30 +152,11 @@ To try the error states of the screens, use these values:
 | Log in | the password `wrong-password` | "Wrong email or password" |
 | Create account | the email `taken@example.com` | "An account with this email already exists" |
 | Any form | an email that starts with `offline@` | "Could not reach the server…" |
+| Reset password | the token `invalid-token` | "This reset link has expired or was already used…" |
 | App start | a token that is not valid | logged out, with the token deleted |
 
-## Connecting a real back end
-
-The app only talks to the `AuthService` interface, so the screens, the session store and the tests
-stay as they are. To connect a service:
-
-A back end for this exists in `server/` (see [Back end](backend.md) and [API](api.md)), but the
-app does not use it yet.
-
-1. Write an implementation of `AuthService` (for example `httpAuthService.ts`) that calls the
-   back end ([API: Connecting the app](api.md#connecting-the-app) lists the calls) and turns every
-   failure into an `AuthError` with the right `code`
-   (`invalidCredentials`, `emailTaken`, `invalidSession`, `network`, `unknown`).
-2. Use it in `src/shared/auth/authService.ts`, in place of the stand-in.
-3. Keep the rules in [Conventions](conventions.md#data-and-storage): check what comes back with
-   Zod, keep only the token in secure storage, and keep keys and secrets in `.env`.
-4. Decide how the token expires and is renewed. The session store treats `invalidSession` from
-   `getUser` as "log out"; a refresh-token flow would be added in the service.
-5. Do not add a message that tells whether an email has an account. The password reset screen and
-   its confirmation are worded so they cannot be used to find out.
-
-Rules for passwords, tokens, rate limiting and email verification belong to the back end and
-should be reviewed by your security team.
+(The real server answers the first three in the same way for the same reasons, so they can also be
+tried against it: a wrong password, an email that is taken, and a server that is not running.)
 
 ## Things that need a decision before real users sign up
 
@@ -137,9 +174,12 @@ should be reviewed by your security team.
 
 ## Known limits
 
-- The stand-in accepts any password.
-- Password reset does not send anything; the confirmation screen is all there is.
-- There is no email verification, no "log out everywhere", and no change of password.
+- The stand-in accepts any password. Only the real server checks them.
+- With the stand-in, password reset sends nothing; with the real server in development the link is
+  printed in the server's log, because no email provider is connected yet.
+- There is no email verification, no "log out everywhere", and no change of password (only a reset).
+- Plain `http://` to a server works in Expo Go but is blocked by default in development builds on
+  Android and iOS (and in every release build). Use https, or add an exception for development.
 - The terms checkbox text is not linked to documents.
 - Trips and stops are not tied to the account: after a log out and a log in as someone else, the
   same trips are on the device.

@@ -4,8 +4,9 @@ The contract between the app and the back end ([Back end](backend.md)). All path
 `/v1`. Bodies are JSON (`Content-Type: application/json`) and are limited to 10 kB. Fields that
 are not listed are **refused** with a 400.
 
-The calls match the app's `AuthService` interface (`src/shared/auth/types.ts`), so the app can use
-the server by implementing that interface; see [Authentication](auth.md#connecting-a-real-back-end).
+The calls match the app's `AuthService` interface (`src/shared/auth/types.ts`), and the app uses
+them through `src/shared/auth/httpAuthService.ts`; see
+[Authentication](auth.md#how-the-app-talks-to-the-server). A contract test keeps the two in step.
 
 ## Conventions
 
@@ -136,9 +137,9 @@ The app has no screen for this step yet (it needs a link that opens the app).
 For load balancers. `200 {"status":"ok"}` when the database can be reached, `503
 {"status":"unavailable"}` when not. Not limited.
 
-## Connecting the app
+## How the app uses it
 
-In the app, an `httpAuthService` would implement `AuthService` like this:
+`httpAuthService` implements the app's `AuthService` like this:
 
 | `AuthService` | Call |
 | --- | --- |
@@ -147,8 +148,12 @@ In the app, an `httpAuthService` would implement `AuthService` like this:
 | `getUser(token)` | `GET /v1/auth/me` → `user` |
 | `signOut(token)` | `POST /v1/auth/logout` |
 | `requestPasswordReset(email)` | `POST /v1/auth/password-reset` |
+| `confirmPasswordReset(token, password)` | `POST /v1/auth/password-reset/confirm` |
 
-A response with `error.code` of `invalidCredentials`, `emailTaken` or `invalidSession` becomes an
-`AuthError` with that code. A failed connection becomes `network`, and anything else `unknown`.
-The app must read the server's address from its settings (not hard-code it), use HTTPS outside
-development, and check each response with Zod before using it.
+An answer with the status that was expected (200, 201, 202 or 204) is a success; anything else is
+a failure. A failure becomes an `AuthError` with the `error.code` of the answer when the app knows
+it (`invalidCredentials`, `emailTaken`, `invalidSession`, `invalidResetToken`, `rateLimited`), with
+`rateLimited` also for any answer with the status 429. A connection that fails, or no answer in 15
+seconds, is `network`. Anything else, such as `validation`, an error page of a proxy or an answer
+in an unexpected shape, is `unknown`: the app checks a form before sending it, so a `validation`
+error means the two sides disagree and is a bug.

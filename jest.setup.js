@@ -60,3 +60,22 @@ jest.mock('expo-secure-store', () => {
     }),
   };
 });
+
+// Tests never use a real auth service, or the stand-in: the module that picks one is replaced by
+// methods that fail loudly. A test that needs the service mocks it itself (see authTestUtils).
+jest.mock('@/shared/auth/authService', () => {
+  const notMocked = (name) =>
+    jest.fn(async () => {
+      throw new Error(`authService.${name} was called in a test that did not mock it`);
+    });
+  return {
+    authService: {
+      signIn: notMocked('signIn'),
+      signUp: notMocked('signUp'),
+      signOut: notMocked('signOut'),
+      getUser: notMocked('getUser'),
+      requestPasswordReset: notMocked('requestPasswordReset'),
+      confirmPasswordReset: notMocked('confirmPasswordReset'),
+    },
+  };
+});

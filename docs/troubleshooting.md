@@ -57,6 +57,27 @@ language.
 - On iOS, after deleting and installing the app again, you may still be logged in: the Keychain
   survives an uninstall.
 
+## The app cannot reach the server
+
+"Could not reach the server" on a log in screen, with `EXPO_PUBLIC_API_URL` set. Check in order:
+
+1. **Is the server running?** Open `http://127.0.0.1:3000/health` in a browser on the computer: it
+   should say `{"status":"ok"}`.
+2. **Is the app using it?** In development the app prints `[auth] Using the back end at ...` in the
+   Expo terminal. If it says "stand-in", the setting was not read: it must be in `.env.local` in the
+   **project root** (not in `server/`), and Expo needs `npx expo start --clear` after a change.
+3. **Phone or Android emulator?** `127.0.0.1` is the phone itself, not your computer. Start the
+   server with `HOST=0.0.0.0 npm run dev`, and use `EXPO_PUBLIC_API_URL=auto` (it finds your
+   computer's address from Expo).
+4. **Same network?** The phone and the computer must be on the same Wi-Fi, and the computer's
+   firewall must allow connections to port 3000.
+5. **A development build, not Expo Go?** Plain `http://` is blocked by default there; see
+   [Authentication](auth.md#known-limits).
+6. **Port 3000 busy?** Start the server with `PORT=3001 npm run dev` and set
+   `EXPO_PUBLIC_API_URL=http://<your computer's address>:3001`.
+
+The app refuses to start with a setting that is not valid, and says why on the red error screen.
+
 ## Place search says it is unavailable
 
 - Check the internet connection of the device.

@@ -9,11 +9,13 @@ import { AuthError, type AuthResult, type AuthService, type User } from './types
 //   log in    password "wrong-password"            -> invalidCredentials
 //   sign up   email "taken@example.com"            -> emailTaken
 //   any call  an email starting with "offline@"    -> network
+//   reset     the token "invalid-token"            -> invalidResetToken
 //   any call  a token that was not made by this service -> invalidSession (getUser)
 
 export const FAKE_WRONG_PASSWORD = 'wrong-password';
 export const FAKE_TAKEN_EMAIL = 'taken@example.com';
 export const FAKE_OFFLINE_EMAIL_PREFIX = 'offline@';
+export const FAKE_INVALID_RESET_TOKEN = 'invalid-token';
 
 const TOKEN_PREFIX = 'fake.';
 
@@ -101,5 +103,12 @@ export const createFakeAuthService = ({ delayMs = 0 }: FakeAuthOptions = {}): Au
   requestPasswordReset: async (email): Promise<void> => {
     await wait(delayMs);
     failIfOffline(email);
+  },
+
+  confirmPasswordReset: async (token): Promise<void> => {
+    await wait(delayMs);
+    if (token.trim() === '' || token === FAKE_INVALID_RESET_TOKEN) {
+      throw new AuthError('invalidResetToken');
+    }
   },
 });

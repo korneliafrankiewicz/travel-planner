@@ -32,7 +32,10 @@ Edits to the code reload the app by themselves. If you do not see a change, see
 
 ## The back end
 
-The app does not need the back end yet. To run it, see [Back end](backend.md#run-it).
+The app runs without it, with a stand-in that accepts any password. To use the real server, see
+[Back end](backend.md#run-it) and [Authentication](auth.md#using-the-real-server): in short,
+`HOST=0.0.0.0 npm run dev` in `server/`, and `EXPO_PUBLIC_API_URL=auto` in a `.env.local` file in
+the project root (copy `env.example`).
 
 ## Check your work
 
@@ -65,7 +68,9 @@ git-ignored, and native settings belong in `app.json` or a config plugin.
 Secrets live only in `.env` files, which are git-ignored (`.env`, `.env.*`, except
 `.env.example`). Never commit a key, and never put one in `app.json`, in code or in a test.
 
-The app **needs no secrets today**: place search uses a service that needs no key. A key will
+The app **needs no secrets today**: place search uses a service that needs no key, and the only
+setting, `EXPO_PUBLIC_API_URL`, is an address that is visible in the built app anyway. Anything
+that starts with `EXPO_PUBLIC_` ends up in the app in plain text, so never put a secret in one. A key will
 be needed for Android release builds with Google Maps; see
 [Before a release](maps-and-search.md#before-a-release).
 

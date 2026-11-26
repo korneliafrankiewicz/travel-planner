@@ -6,6 +6,8 @@ describe('toFormErrorKey', () => {
   it.each([
     ['invalidCredentials', 'formErrors.invalidCredentials'],
     ['emailTaken', 'formErrors.emailTaken'],
+    ['invalidResetToken', 'formErrors.invalidResetToken'],
+    ['rateLimited', 'formErrors.rateLimited'],
     ['network', 'formErrors.network'],
     ['unknown', 'formErrors.unknown'],
   ] as const)('maps %s to %s', (code, key) => {

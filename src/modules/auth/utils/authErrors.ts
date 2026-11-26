@@ -4,12 +4,16 @@ import { AuthError, type AuthErrorCode } from '@/shared/auth/types';
 export type AuthFormErrorKey =
   | 'formErrors.invalidCredentials'
   | 'formErrors.emailTaken'
+  | 'formErrors.invalidResetToken'
+  | 'formErrors.rateLimited'
   | 'formErrors.network'
   | 'formErrors.unknown';
 
 const keys: Record<AuthErrorCode, AuthFormErrorKey> = {
   invalidCredentials: 'formErrors.invalidCredentials',
   emailTaken: 'formErrors.emailTaken',
+  invalidResetToken: 'formErrors.invalidResetToken',
+  rateLimited: 'formErrors.rateLimited',
   network: 'formErrors.network',
   // A session that stopped being valid has no meaning on a log in or sign up screen.
   invalidSession: 'formErrors.unknown',

@@ -37,6 +37,20 @@ export const auth: Translations<typeof en> = {
       'Jeśli istnieje konto dla adresu {{email}}, wysłaliśmy link do zresetowania hasła.',
     backToLogIn: 'Wróć do logowania',
   },
+  resetPassword: {
+    title: 'Wybierz nowe hasło',
+    subtitle: 'Wybierz nowe hasło do swojego konta.',
+    submit: 'Zapisz hasło',
+    submitting: 'Zapisywanie…',
+    successTitle: 'Hasło zostało zmienione',
+    successMessage: 'Możesz teraz zalogować się nowym hasłem.',
+    logIn: 'Zaloguj się',
+    invalidTitle: 'Ten link jest nieprawidłowy',
+    invalidMessage: 'Brakuje linku do zresetowania hasła lub jest niekompletny. Poproś o nowy.',
+    requestNew: 'Poproś o nowy link',
+    linkNotWorking: 'Link nie działa?',
+    newOne: 'Poproś o nowy',
+  },
   fields: {
     name: {
       label: 'Imię',
@@ -54,6 +68,9 @@ export const auth: Translations<typeof en> = {
     confirmPassword: {
       label: 'Powtórz hasło',
     },
+    newPassword: {
+      label: 'Nowe hasło',
+    },
   },
   strength: {
     label: 'Siła hasła',
@@ -68,6 +85,7 @@ export const auth: Translations<typeof en> = {
     emailInvalid: 'Podaj prawidłowy adres e-mail',
     passwordRequired: 'Podaj hasło',
     passwordTooShort: 'Użyj co najmniej 8 znaków',
+    passwordTooLong: 'Użyj co najwyżej 128 znaków',
     passwordTooWeak: 'Użyj liter i cyfr',
     passwordsDoNotMatch: 'Hasła nie są takie same',
     termsRequired: 'Zaakceptuj regulamin, aby założyć konto',
@@ -76,6 +94,8 @@ export const auth: Translations<typeof en> = {
     invalidCredentials: 'Nieprawidłowy e-mail lub hasło',
     emailTaken: 'Konto z tym adresem e-mail już istnieje',
     network: 'Nie udało się połączyć z serwerem. Sprawdź połączenie i spróbuj ponownie.',
+    invalidResetToken: 'Ten link wygasł lub został już użyty. Poproś o nowy.',
+    rateLimited: 'Zbyt wiele prób. Odczekaj minutę i spróbuj ponownie.',
     unknown: 'Coś poszło nie tak. Spróbuj ponownie.',
   },
 };

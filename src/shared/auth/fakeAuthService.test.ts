@@ -1,5 +1,6 @@
 import {
   createFakeAuthService,
+  FAKE_INVALID_RESET_TOKEN,
   FAKE_TAKEN_EMAIL,
   FAKE_WRONG_PASSWORD,
   nameFromEmail,
@@ -114,6 +115,18 @@ describe('fake auth service', () => {
     it('fails like a lost connection for an offline address', async () => {
       expect(await failureOf(service.requestPasswordReset('offline@example.com'))).toMatchObject({
         code: 'network',
+      });
+    });
+  });
+
+  describe('confirmPasswordReset', () => {
+    it('accepts any token, as there are no real links', async () => {
+      await expect(service.confirmPasswordReset('any-token', 'NewSecret456')).resolves.toBeUndefined();
+    });
+
+    it.each([FAKE_INVALID_RESET_TOKEN, '', '   '])('fails on purpose for the token %p', async (token) => {
+      expect(await failureOf(service.confirmPasswordReset(token, 'NewSecret456'))).toMatchObject({
+        code: 'invalidResetToken',
       });
     });
   });

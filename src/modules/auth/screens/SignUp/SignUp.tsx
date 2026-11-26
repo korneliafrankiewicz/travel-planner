@@ -11,7 +11,7 @@ import { AuthScreen } from '../../components/AuthScreen';
 import { AuthSwitchPrompt } from '../../components/AuthSwitchPrompt';
 import { FormMessage } from '../../components/FormMessage';
 import { PasswordField } from '../../components/PasswordField';
-import { PasswordStrengthMeter } from './components/PasswordStrengthMeter';
+import { PasswordStrengthMeter } from '../../components/PasswordStrengthMeter';
 import { TermsCheckbox } from './components/TermsCheckbox';
 import { useSignUpForm } from './hooks/useSignUpForm';
 

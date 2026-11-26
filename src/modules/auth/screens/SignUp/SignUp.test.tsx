@@ -67,6 +67,24 @@ describe('SignUp screen', () => {
     expect(screen.getByRole('link', { name: 'Log in' })).toBeVisible();
   });
 
+  it('moves from field to field with the keyboard\'s next key, and the form can be completed', async () => {
+    service.signUp.mockResolvedValue(annaResult);
+    const form = await renderSignUp();
+
+    await form.user.type(screen.getByLabelText('Name'), 'Anna Nowak', { submitEditing: true });
+    await form.user.type(screen.getByLabelText('Email'), 'anna@example.com', { submitEditing: true });
+    await form.user.type(screen.getByLabelText('Password'), 'Secret123', { submitEditing: true });
+    await form.typeConfirm('Secret123');
+    await form.acceptTerms();
+    await form.user.press(createButton());
+
+    expect(service.signUp).toHaveBeenCalledWith({
+      name: 'Anna Nowak',
+      email: 'anna@example.com',
+      password: 'Secret123',
+    });
+  });
+
   it('does not start out with errors', async () => {
     await renderSignUp();
     expect(screen.queryByText('Enter your name')).toBeNull();

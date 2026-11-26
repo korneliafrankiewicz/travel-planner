@@ -1,0 +1,13 @@
+{
+  // Type-checks the contract test. It imports code of the app (src/ in the repository root), which
+  // is written for a bundler (imports without file endings), so it needs its own settings.
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "rootDir": "../..",
+    "noEmit": true
+  },
+  "include": ["./**/*.ts"],
+  "exclude": ["../node_modules", "../../node_modules"]
+}

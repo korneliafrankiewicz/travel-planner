@@ -368,3 +368,60 @@ describe('StopForm location', () => {
     });
   });
 });
+
+describe('StopForm fields', () => {
+  it('saves the type, day, time, duration, notes and link that were entered', async () => {
+    const user = userEvent.setup();
+    const { onSave, ready } = renderForm();
+    await ready;
+
+    await user.press(screen.getByRole('radio', { name: 'Meal' }));
+    await user.press(screen.getByRole('radio', { name: 'Tuesday, December 15, 2026' }));
+    const time = screen.getByDisplayValue('10:00');
+    await user.clear(time);
+    await user.type(time, '1930');
+    const duration = screen.getByDisplayValue('90');
+    await user.clear(duration);
+    await user.type(duration, '1a2b0');
+    await user.type(screen.getByLabelText('Notes'), 'Window table');
+    await user.type(screen.getByLabelText('Link'), 'https://example.com/table');
+    await user.press(screen.getByRole('button', { name: 'Save stop' }));
+
+    expect(onSave).toHaveBeenCalledWith({
+      type: 'meal',
+      title: 'Belém Tower',
+      date: '2026-12-15',
+      startTime: '19:30',
+      durationMin: 120,
+      notes: 'Window table',
+      url: 'https://example.com/table',
+      coordinates: null,
+    });
+  });
+
+  it('saves coordinates that are typed in', async () => {
+    const user = userEvent.setup();
+    const { onSave, ready } = renderForm();
+    await ready;
+
+    await user.type(screen.getByLabelText('Latitude'), '38.7223');
+    await user.type(screen.getByLabelText('Longitude'), '-9.1393');
+    await user.press(screen.getByRole('button', { name: 'Save stop' }));
+
+    expect(onSave).toHaveBeenCalledWith(
+      expect.objectContaining({ coordinates: { latitude: 38.7223, longitude: -9.1393 } }),
+    );
+  });
+
+  it('shows what is wrong, and saves nothing', async () => {
+    const user = userEvent.setup();
+    const { onSave, ready } = renderForm({ title: '', startTime: '25:00', latitude: '95', longitude: '10' });
+    await ready;
+
+    await user.press(screen.getByRole('button', { name: 'Save stop' }));
+
+    expect(screen.getByText('Enter a title')).toBeVisible();
+    expect(screen.getByText('Enter a time as HH:mm, e.g. 09:30')).toBeVisible();
+    expect(onSave).not.toHaveBeenCalled();
+  });
+});

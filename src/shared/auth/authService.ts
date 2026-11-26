@@ -1,11 +1,29 @@
-import { createFakeAuthService } from './fakeAuthService';
+import Constants from 'expo-constants';
+
+import { resolveApiTarget } from './apiUrl';
+import { selectAuthService } from './selectAuthService';
 import type { AuthService } from './types';
 
-// How long the stand-in takes to answer, so the loading states can be seen on a device.
-const FAKE_DELAY_MS = 700;
+// The auth service the app uses. Everything goes through this one export.
+//
+// With `EXPO_PUBLIC_API_URL` set (see `env.example`) it is the real back end in `server/`.
+// Without it, it is a stand-in that runs inside the app, accepts any password and keeps no
+// accounts. That makes the app easy to try, but it is not secure, so a release must always set
+// the address of the server (and it must be https).
+const target = resolveApiTarget({
+  // Must be written exactly like this: Expo only replaces `process.env.EXPO_PUBLIC_...` when it
+  // is spelled out in full.
+  configured: process.env.EXPO_PUBLIC_API_URL,
+  hostUri: Constants.expoConfig?.hostUri,
+  isDev: __DEV__,
+});
 
-// The auth service the app uses. Everything goes through this one export, so connecting a
-// real back end means replacing this line.
-// TODO: replace the stand-in with the real service once the back end exists. It accepts any
-// password and is not secure, so the app must not be released with it.
-export const authService: AuthService = createFakeAuthService({ delayMs: FAKE_DELAY_MS });
+if (__DEV__) {
+  console.info(
+    target.kind === 'http'
+      ? `[auth] Using the back end at ${target.baseUrl}`
+      : '[auth] Using the built-in stand-in service (no server). Set EXPO_PUBLIC_API_URL to use the server.',
+  );
+}
+
+export const authService: AuthService = selectAuthService(target);
