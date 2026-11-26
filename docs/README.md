@@ -12,7 +12,7 @@ stops, a route with distances for each day, and place search.
 | [API](api.md) | See what the app can ask the server |
 | [Authentication](auth.md) | Understand log in and sign up, or connect a real back end |
 | [Maps and place search](maps-and-search.md) | Work on maps, routes or search, or prepare a release |
-| [Testing](testing.md) | Write or run tests |
+| [Testing](testing.md) | Write or run tests, including the end-to-end tests in a browser |
 | [Troubleshooting](troubleshooting.md) | Find out why something does not show up or work |
 
 The short rules live in [`CLAUDE.md`](../CLAUDE.md) and the Expo-specific ones in

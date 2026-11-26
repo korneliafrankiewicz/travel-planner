@@ -2,8 +2,9 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
-    // TypeScript 6 only loads the @types packages listed here. Jest provides the test globals.
-    "types": ["jest"],
+    // TypeScript 6 only loads the @types packages listed here. Jest provides the test globals;
+    // Node is for the Playwright config and tests in e2e/.
+    "types": ["jest", "node"],
     "paths": {
       "@/*": [
         "./src/*"

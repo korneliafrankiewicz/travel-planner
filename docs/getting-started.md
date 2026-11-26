@@ -45,6 +45,7 @@ Lint and typecheck must pass, and the tests should pass, before a task is done.
 npm run lint        # expo lint
 npm run typecheck   # tsc --noEmit
 npm test            # all tests, once
+npm run e2e         # end-to-end tests in a browser (needs `npx playwright install chromium` once)
 ```
 
 More about tests in [Testing](testing.md).

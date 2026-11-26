@@ -36,6 +36,7 @@
     "zustand": "^5.1.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.1",
     "@testing-library/react-native": "^14.1.0",
     "@types/jest": "30.0.0",
     "@types/react": "~19.3.0",
@@ -57,7 +58,9 @@
     "test:watch": "jest --watch",
     "typecheck": "tsc --noEmit",
     "test:coverage": "jest --coverage",
-    "test:report": "jest"
+    "test:report": "jest",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui"
   },
   "private": true
 }

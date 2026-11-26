@@ -16,8 +16,8 @@ module.exports = {
     // Same alias as in tsconfig.json.
     '^@/(.*)$': '<rootDir>/src/$1',
   },
-  // The back end in server/ has its own tests (Vitest).
-  testPathIgnorePatterns: ['/node_modules/', '/.expo/', '/server/'],
+  // The back end in server/ has its own tests (Vitest), and e2e/ has Playwright tests.
+  testPathIgnorePatterns: ['/node_modules/', '/.expo/', '/server/', '/e2e/'],
   reporters: createHtmlReport
     ? [
         'default',
